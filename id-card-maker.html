@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ID Card Maker - QuickTools</title>
+    
+    <!-- HTML को इमेज में बदलने के लिए सुरक्षित लाइब्रेरी -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; }
+        header { background-color: #007bff; color: white; padding: 15px; text-align: center; }
+        
+        .container { display: flex; flex-wrap: wrap; max-width: 1000px; margin: 30px auto; gap: 30px; padding: 0 20px; justify-content: center; }
+        
+        /* लेफ्ट साइड: फॉर्म */
+        .form-box { flex: 1; min-width: 320px; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .form-box label { font-weight: bold; color: #333; display: block; margin-top: 12px; font-size: 14px; }
+        .form-box input { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 15px; }
+        
+        .btn-down { background-color: #28a745; color: white; border: none; padding: 12px; border-radius: 5px; font-size: 16px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 20px; }
+        .btn-down:hover { background-color: #218838; }
+
+        /* राइट साइड: ID Card का लाइव डिज़ाइन */
+        .preview-box { flex: 1; min-width: 320px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        
+        /* असली ID कार्ड का साइज़ और डिज़ाइन */
+        .id-card { width: 260px; height: 410px; background: #fff; border-radius: 10px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); overflow: hidden; position: relative; border: 1px solid #ddd; display: flex; flex-direction: column; }
+        
+        .id-header { background: #007bff; color: white; text-align: center; padding: 15px 10px; font-size: 18px; font-weight: bold; text-transform: uppercase; }
+        
+        .id-photo-container { text-align: center; margin-top: 20px; }
+        .id-photo-container img { width: 100px; height: 100px; border-radius: 50%; border: 3px solid #007bff; object-fit: cover; background: #eee; }
+        
+        .id-body { text-align: center; padding: 10px 15px; flex-grow: 1; }
+        .id-name { font-size: 22px; font-weight: bold; color: #333; margin: 10px 0 5px; text-transform: uppercase; }
+        .id-desig { font-size: 14px; color: #dc3545; font-weight: bold; margin-bottom: 15px; }
+        
+        .id-details { text-align: left; font-size: 13px; color: #444; line-height: 1.6; margin-left: 20px; }
+        .id-details strong { color: #222; }
+        
+        .id-footer { background: #333; color: white; text-align: center; padding: 10px; font-size: 12px; margin-top: auto; }
+        
+        .back-link { display: block; margin-top: 20px; color: #007bff; text-decoration: none; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h2>QuickTools.in</h2>
+    </header>
+
+    <div class="container">
+        <!-- लेफ्ट: इनपुट फॉर्म -->
+        <div class="form-box">
+            <h3>🪪 ID Card Maker</h3>
+            <p>अपनी जानकारी भरें और अपना ID कार्ड डिज़ाइन करें।</p>
+            
+            <label>संस्था / कंपनी का नाम:</label>
+            <input type="text" id="companyInput" placeholder="उदा: QuickTools Pvt Ltd" oninput="updateID()">
+            
+            <label>फोटो चुनें (Upload Photo):</label>
+            <input type="file" id="photoInput" accept="image/jpeg, image/png" onchange="loadPhoto(event)">
+            
+            <label>पूरा नाम:</label>
+            <input type="text" id="nameInput" placeholder="उदा: Rahul Sharma" oninput="updateID()">
+            
+            <label>पद (Designation/Class):</label>
+            <input type="text" id="desigInput" placeholder="उदा: Software Engineer" oninput="updateID()">
+            
+            <label>ID Number:</label>
+            <input type="text" id="idNumInput" placeholder="उदा: QT-2024-001" oninput="updateID()">
+            
+            <label>रक्त समूह (Blood Group):</label>
+            <input type="text" id="bloodInput" placeholder="उदा: O+" oninput="updateID()">
+            
+            <label>मोबाइल नंबर:</label>
+            <input type="text" id="phoneInput" placeholder="उदा: +91-9876543210" oninput="updateID()">
+
+            <button class="btn-down" onclick="downloadID()">⬇️ ID कार्ड डाउनलोड करें (PNG)</button>
+            <a href="index.html" class="back-link">← वापस होमपेज पर जाएं</a>
+        </div>
+
+        <!-- राइट: लाइव प्रीव्यू -->
+        <div class="preview-box">
+            <div class="id-card" id="idCardBox">
+                <!-- हेडर -->
+                <div class="id-header" id="cCompany">Your Company Name</div>
+                
+                <!-- फोटो -->
+                <div class="id-photo-container">
+                    <img id="cPhoto" src="https://via.placeholder.com/100?text=Photo" alt="Profile Photo">
+                </div>
+                
+                <!-- मुख्य जानकारी -->
+                <div class="id-body">
+                    <div class="id-name" id="cName">YOUR NAME</div>
+                    <div class="id-desig" id="cDesig">Your Designation</div>
+                    
+                    <div class="id-details">
+                        <strong>ID No :</strong> <span id="cIdNum">XXXX-XXXX</span><br>
+                        <strong>Blood :</strong> <span id="cBlood">Unknown</span><br>
+                        <strong>Phone :</strong> <span id="cPhone">+91-0000000000</span>
+                    </div>
+                </div>
+                
+                <!-- फूटर -->
+                <div class="id-footer">
+                    Authorized Signatory
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // फॉर्म से डेटा लेकर लाइव ID कार्ड पर दिखाना
+        function updateID() {
+            document.getElementById('cCompany').innerText = document.getElementById('companyInput').value || "Your Company Name";
+            document.getElementById('cName').innerText = document.getElementById('nameInput').value || "YOUR NAME";
+            document.getElementById('cDesig').innerText = document.getElementById('desigInput').value || "Your Designation";
+            document.getElementById('cIdNum').innerText = document.getElementById('idNumInput').value || "XXXX-XXXX";
+            document.getElementById('cBlood').innerText = document.getElementById('bloodInput').value || "Unknown";
+            document.getElementById('cPhone').innerText = document.getElementById('phoneInput').value || "+91-0000000000";
+        }
+
+        // फोटो को अपलोड करके कार्ड में सेट करना
+        function loadPhoto(event) {
+            let file = event.target.files[0];
+            if (file) {
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('cPhoto').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // ID कार्ड को इमेज (PNG) के रूप में डाउनलोड करना
+        function downloadID() {
+            let idCardElement = document.getElementById('idCardBox');
+            
+            // html2canvas लाइब्रेरी की मदद से HTML को इमेज बनाना
+            html2canvas(idCardElement, { scale: 3 }).then(canvas => {
+                let link = document.createElement('a');
+                link.download = 'My_ID_Card.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+    </script>
+
+</body>
+</html>

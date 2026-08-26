@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator - QuickTools</title>
+    <!-- QR Code बनाने के लिए सुरक्षित फ्री लाइब्रेरी -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; }
+        header { background-color: #007bff; color: white; padding: 15px; text-align: center; }
+        .container { max-width: 400px; margin: 50px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; }
+        input[type="text"] { width: 100%; padding: 12px; margin: 15px 0; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; box-sizing: border-box; }
+        .btn-gen { background-color: #28a745; color: white; border: none; padding: 12px 20px; border-radius: 5px; font-size: 16px; cursor: pointer; width: 100%; }
+        .btn-gen:hover { background-color: #218838; }
+        
+        #qrCodeBox { margin-top: 20px; display: flex; justify-content: center; align-items: center; min-height: 200px; }
+        
+        .btn-down { background-color: #17a2b8; color: white; border: none; padding: 10px 20px; border-radius: 5px; font-size: 16px; cursor: pointer; width: 100%; margin-top: 15px; display: none; }
+        .btn-down:hover { background-color: #138496; }
+        
+        .back-link { display: block; margin-top: 20px; color: #007bff; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h2>QuickTools.in</h2>
+    </header>
+
+    <div class="container">
+        <h3>QR Code Generator 🔲</h3>
+        <p>कोई भी लिंक (URL) या टेक्स्ट डालें:</p>
+        
+        <input type="text" id="qrInput" placeholder="जैसे: https://google.com या आपका नाम">
+        <button class="btn-gen" onclick="generateQR()">QR Code बनाएं</button>
+
+        <!-- यहाँ QR Code दिखाई देगा -->
+        <div id="qrCodeBox"></div>
+
+        <!-- डाउनलोड बटन (यह QR बनने के बाद दिखेगा) -->
+        <button class="btn-down" id="downloadBtn" onclick="downloadQR()">⬇️ QR Code डाउनलोड करें</button>
+
+        <a href="#" class="back-link">← वापस होमपेज पर जाएं</a>
+    </div>
+
+    <script>
+        function generateQR() {
+            let qrText = document.getElementById("qrInput").value;
+            let qrBox = document.getElementById("qrCodeBox");
+            let downloadBtn = document.getElementById("downloadBtn");
+
+            // अगर बॉक्स खाली है तो अलर्ट दें
+            if (!qrText) {
+                alert("कृपया कोई लिंक या टेक्स्ट डालें!");
+                return;
+            }
+
+            // पुराना QR कोड साफ करें
+            qrBox.innerHTML = "";
+
+            // नया QR कोड बनाएं
+            new QRCode(qrBox, {
+                text: qrText,
+                width: 200,
+                height: 200,
+                colorDark : "#000000",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
+
+            // डाउनलोड बटन दिखाएं
+            downloadBtn.style.display = "block";
+        }
+
+        function downloadQR() {
+            // QR Code की इमेज निकालें
+            let qrImage = document.querySelector("#qrCodeBox img");
+            let canvas = document.querySelector("#qrCodeBox canvas");
+            
+            let link = document.createElement("a");
+            link.download = "QuickTools_QRCode.png";
+
+            if (qrImage && qrImage.getAttribute("src") !== null) {
+                link.href = qrImage.src;
+                link.click();
+            } else if (canvas) {
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+            } else {
+                alert("QR Code डाउनलोड करने में समस्या आ रही है।");
+            }
+        }
+    </script>
+
+</body>
+</html>

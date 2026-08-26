@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poster & Status Maker - QuickTools</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; }
+        header { background-color: #007bff; color: white; padding: 15px; text-align: center; }
+        
+        .container { display: flex; flex-wrap: wrap; max-width: 1000px; margin: 30px auto; gap: 30px; padding: 0 20px; justify-content: center; }
+        
+        /* लेफ्ट साइड: इनपुट फॉर्म */
+        .form-box { flex: 1; min-width: 320px; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .form-box label { font-weight: bold; color: #333; display: block; margin-top: 12px; font-size: 14px; }
+        .form-box textarea, .form-box input, .form-box select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 15px; }
+        
+        .color-picker-group { display: flex; gap: 10px; align-items: center; margin-top: 5px; }
+        .color-picker-group input[type="color"] { border: none; width: 40px; height: 40px; cursor: pointer; padding: 0; background: none; }
+
+        .btn-down { background-color: #28a745; color: white; border: none; padding: 12px; border-radius: 5px; font-size: 16px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 20px; }
+        .btn-down:hover { background-color: #218838; }
+
+        /* राइट साइड: कैनवास (पोस्टर प्रीव्यू) */
+        .preview-box { flex: 1; min-width: 320px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        
+        canvas { max-width: 100%; height: auto; border-radius: 10px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); background: #fff; }
+        
+        .back-link { display: block; margin-top: 20px; color: #007bff; text-decoration: none; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h2>QuickTools.in</h2>
+    </header>
+
+    <div class="container">
+        <!-- लेफ्ट: इनपुट फॉर्म -->
+        <div class="form-box">
+            <h3>🎨 Poster / Status Maker</h3>
+            <p>अपना संदेश और नाम लिखकर सुंदर स्टेटस/पोस्टर बनाएं।</p>
+            
+            <label>मुख्य संदेश (Quote / Message):</label>
+            <textarea id="msgInput" rows="4" placeholder="यहाँ अपना सुविचार या संदेश लिखें..." oninput="drawPoster()">जिंदगी में इतनी शिद्दत से अपने किरदार को निभाओ कि परदा गिरने के बाद भी तालियाँ बजती रहें।</textarea>
+            
+            <label>आपका नाम या ब्रांड (Author / Name):</label>
+            <input type="text" id="authorInput" placeholder="उदा: Rahul Kumar" value="~ QuickTools" oninput="drawPoster()">
+            
+            <label>बैकग्राउंड का रंग (Background Color):</label>
+            <div class="color-picker-group">
+                <input type="color" id="bgColor" value="#ff7675" oninput="drawPoster()">
+                <span>(पसंदीदा रंग चुनें)</span>
+            </div>
+
+            <label>टेक्स्ट का रंग (Text Color):</label>
+            <div class="color-picker-group">
+                <input type="color" id="textColor" value="#ffffff" oninput="drawPoster()">
+                <span>(रंग चुनें)</span>
+            </div>
+
+            <button class="btn-down" onclick="downloadPoster()">⬇️ पोस्टर डाउनलोड करें (PNG)</button>
+            <a href="index.html" class="back-link">← वापस होमपेज पर जाएं</a>
+        </div>
+
+        <!-- राइट: लाइव कैनवास प्रीव्यू -->
+        <div class="preview-box">
+            <canvas id="posterCanvas" width="600" height="600"></canvas>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById("posterCanvas");
+        const ctx = canvas.getContext("2d");
+
+        function drawPoster() {
+            let msg = document.getElementById("msgInput").value;
+            let author = document.getElementById("authorInput").value;
+            let bgColor = document.getElementById("bgColor").value;
+            let textColor = document.getElementById("textColor").value;
+
+            // 1. बैकग्राउंड रंग भरना
+            ctx.fillStyle = bgColor;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // 2. डेकोरेटिव बॉर्डर (फ्रेम) बनाना
+            ctx.strokeStyle = textColor;
+            ctx.lineWidth = 10;
+            ctx.strokeRect(30, 30, canvas.width - 60, canvas.height - 60);
+
+            // 3. टेक्स्ट स्टाइलिंग (Message)
+            ctx.fillStyle = textColor;
+            ctx.font = "bold 28px Arial";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+
+            // लंबे टेक्स्ट को लाइन ब्रेक (Wrap) करने का फंक्शन
+            let maxWidth = canvas.width - 120;
+            let lineHeight = 40;
+            let words = msg.split(" ");
+            let line = "";
+            let lines = [];
+
+            for (let n = 0; n < words.length; n++) {
+                let testLine = line + words[n] + " ";
+                let metrics = ctx.measureText(testLine);
+                let testWidth = metrics.width;
+                if (testWidth > maxWidth && n > 0) {
+                    lines.push(line);
+                    line = words[n] + " ";
+                } else {
+                    line = testLine;
+                }
+            }
+            lines.push(line);
+
+            // सभी लाइनों को कैनवास के बीच में वर्टिकल रूप से सेट करना
+            let totalHeight = lines.length * lineHeight;
+            let startY = (canvas.height / 2) - (totalHeight / 2) - 20;
+
+            for (let k = 0; k < lines.length; k++) {
+                ctx.fillText(lines[k], canvas.width / 2, startY + (k * lineHeight));
+            }
+
+            // 4. लेखक/नाम (Author) नीचे की तरफ लिखना
+            if (author) {
+                ctx.font = "italic 22px Arial";
+                ctx.fillText(author, canvas.width / 2, startY + (lines.length * lineHeight) + 40);
+            }
+        }
+
+        // पेज लोड होते ही डिफ़ॉल्ट पोस्टर बना दें
+        window.onload = drawPoster;
+
+        // पोस्टर को PNG इमेज के रूप में डाउनलोड करना
+        function downloadPoster() {
+            let link = document.createElement("a");
+            link.download = "QuickTools_Poster.png";
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+        }
+    </script>
+
+</body>
+</html>

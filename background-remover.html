@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Background Remover - QuickTools</title>
+    
+    <!-- AI Background Removal लाइब्रेरी -->
+    <script src="https://unpkg.com/@imgly/background-removal/dist/browser/imglyRemoveBackground.js"></script>
+    
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; }
+        header { background-color: #007bff; color: white; padding: 15px; text-align: center; }
+        
+        .container { max-width: 600px; margin: 40px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; }
+        
+        input[type="file"] { margin: 20px 0; font-size: 16px; border: 2px dashed #007bff; padding: 20px; width: 100%; box-sizing: border-box; cursor: pointer; background-color: #f9f9f9; border-radius: 5px; }
+        
+        .btn-action { background-color: #6f42c1; color: white; border: none; padding: 12px 20px; border-radius: 5px; font-size: 18px; cursor: pointer; width: 100%; font-weight: bold; margin-bottom: 20px; }
+        .btn-action:hover { background-color: #59339d; }
+        .btn-action:disabled { background-color: #a78bfa; cursor: not-allowed; }
+        
+        /* लोडिंग स्क्रीन का डिज़ाइन */
+        #loadingBox { display: none; margin: 20px 0; padding: 15px; background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; border-radius: 5px; font-weight: bold; }
+        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #856404; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 0 auto 10px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        /* रिजल्ट इमेज */
+        #resultBox { display: none; margin-top: 20px; }
+        /* बैकग्राउंड हटा है, यह दिखाने के लिए चेकरबोर्ड पैटर्न (Checkerboard) */
+        .img-preview-bg { background-image: linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%); background-size: 20px 20px; background-position: 0 0, 0 10px, 10px -10px, -10px 0px; border-radius: 5px; border: 1px solid #ddd; padding: 10px; display: inline-block; }
+        img#outputImage { max-width: 100%; max-height: 400px; display: block; }
+        
+        .btn-down { background-color: #28a745; color: white; border: none; padding: 12px 20px; border-radius: 5px; font-size: 16px; cursor: pointer; width: 100%; margin-top: 15px; text-decoration: none; display: inline-block; box-sizing: border-box; font-weight: bold; }
+        .btn-down:hover { background-color: #218838; }
+        
+        .back-link { display: block; margin-top: 25px; color: #007bff; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h2>QuickTools.in</h2>
+    </header>
+
+    <div class="container">
+        <h3>🧹 Background Remover (AI)</h3>
+        <p>बिना किसी सर्वर के सीधे अपने ब्राउज़र में फोटो का बैकग्राउंड हटाएं। 100% सुरक्षित!</p>
+        
+        <input type="file" id="imageInput" accept="image/jpeg, image/png, image/webp">
+
+        <button class="btn-action" id="processBtn" onclick="removeBackground()">✨ बैकग्राउंड हटाएं</button>
+
+        <!-- लोडिंग एनीमेशन -->
+        <div id="loadingBox">
+            <div class="spinner"></div>
+            <p>AI आपकी फोटो का बैकग्राउंड हटा रहा है...<br><small>(पहली बार इसमें 10-20 सेकंड लग सकते हैं)</small></p>
+        </div>
+
+        <!-- रिजल्ट सेक्शन -->
+        <div id="resultBox">
+            <div class="img-preview-bg">
+                <img id="outputImage" alt="No Background Image">
+            </div>
+            <a id="downloadLink" class="btn-down" download="no_background.png">⬇️ PNG फोटो डाउनलोड करें</a>
+        </div>
+
+        <a href="index.html" class="back-link">← वापस होमपेज पर जाएं</a>
+    </div>
+
+    <script>
+        async function removeBackground() {
+            let fileInput = document.getElementById("imageInput");
+            let processBtn = document.getElementById("processBtn");
+            let loadingBox = document.getElementById("loadingBox");
+            let resultBox = document.getElementById("resultBox");
+            let outputImage = document.getElementById("outputImage");
+            let downloadLink = document.getElementById("downloadLink");
+
+            if (fileInput.files.length === 0) {
+                alert("कृपया पहले एक फोटो (Image) चुनें!");
+                return;
+            }
+
+            let imageFile = fileInput.files[0];
+
+            // UI को लोडिंग स्टेट में बदलें
+            processBtn.disabled = true;
+            processBtn.innerText = "⏳ प्रोसेसिंग हो रही है...";
+            loadingBox.style.display = "block";
+            resultBox.style.display = "none";
+
+            try {
+                // AI मॉडल का उपयोग करके बैकग्राउंड हटाएं
+                let imageBlob = await imglyRemoveBackground(imageFile);
+                
+                // Blob (नई इमेज) को URL में बदलें
+                let url = URL.createObjectURL(imageBlob);
+
+                // रिजल्ट को स्क्रीन पर सेट करें
+                outputImage.src = url;
+                downloadLink.href = url;
+                
+                // लोडिंग हटाकर रिजल्ट दिखाएं
+                loadingBox.style.display = "none";
+                resultBox.style.display = "block";
+                processBtn.innerText = "✨ बैकग्राउंड हटाएं";
+                processBtn.disabled = false;
+
+            } catch (error) {
+                console.error("Error removing background:", error);
+                alert("बैकग्राउंड हटाने में कोई समस्या आई। कृपया दूसरी फोटो आज़माएँ।");
+                loadingBox.style.display = "none";
+                processBtn.innerText = "✨ बैकग्राउंड हटाएं";
+                processBtn.disabled = false;
+            }
+        }
+    </script>
+
+</body>
+</html>

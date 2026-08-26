@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Maker - QuickTools</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; }
+        header { background-color: #007bff; color: white; padding: 15px; text-align: center; }
+        
+        .container { display: flex; flex-wrap: wrap; max-width: 1200px; margin: 20px auto; gap: 20px; padding: 0 20px; }
+        
+        /* फॉर्म का डिज़ाइन */
+        .form-box { flex: 1; min-width: 300px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .form-box input, .form-box textarea { width: 100%; padding: 10px; margin: 8px 0 15px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        .btn-print { background-color: #28a745; color: white; border: none; padding: 12px; border-radius: 5px; font-size: 16px; cursor: pointer; width: 100%; font-weight: bold; }
+        .btn-print:hover { background-color: #218838; }
+
+        /* रिज्यूमे (CV) का लाइव प्रीव्यू डिज़ाइन */
+        .resume-preview { flex: 2; min-width: 400px; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .resume-preview h1 { margin: 0; color: #333; font-size: 28px; text-transform: uppercase; }
+        .resume-preview p.contact-info { color: #555; margin-top: 5px; border-bottom: 2px solid #007bff; padding-bottom: 10px; }
+        .section-title { color: #007bff; border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-top: 20px; text-transform: uppercase; }
+        .resume-text { margin-top: 10px; color: #333; line-height: 1.6; white-space: pre-wrap; }
+
+        .back-link { display: block; margin-top: 20px; color: #007bff; text-decoration: none; text-align: center; }
+
+        /* प्रिंट करते समय सिर्फ रिज्यूमे दिखे, फॉर्म छिप जाए */
+        @media print {
+            body { background-color: white; }
+            header, .form-box, .back-link { display: none !important; }
+            .container { margin: 0; padding: 0; display: block; }
+            .resume-preview { box-shadow: none; padding: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h2>QuickTools.in</h2>
+    </header>
+
+    <div class="container">
+        <!-- लेफ्ट साइड: फॉर्म -->
+        <div class="form-box">
+            <h3>📝 अपनी जानकारी भरें</h3>
+            
+            <label>पूरा नाम:</label>
+            <input type="text" id="nameInput" placeholder="उदा: Rahul Kumar" oninput="updateResume()">
+            
+            <label>ईमेल और फोन नंबर:</label>
+            <input type="text" id="contactInput" placeholder="rahul@email.com | +91-9876543210" oninput="updateResume()">
+            
+            <label>अपने बारे में (Summary):</label>
+            <textarea id="summaryInput" rows="3" placeholder="अपने करियर के लक्ष्यों के बारे में लिखें..." oninput="updateResume()"></textarea>
+            
+            <label>शिक्षा (Education):</label>
+            <textarea id="eduInput" rows="3" placeholder="B.Sc. - Delhi University (2020)&#10;12th - CBSE Board (2017)" oninput="updateResume()"></textarea>
+            
+            <label>अनुभव (Experience):</label>
+            <textarea id="expInput" rows="3" placeholder="Data Entry Operator - ABC Corp (2021-2023)" oninput="updateResume()"></textarea>
+            
+            <label>स्किल्स (Skills):</label>
+            <textarea id="skillsInput" rows="2" placeholder="HTML, CSS, MS Office, Typing" oninput="updateResume()"></textarea>
+
+            <button class="btn-print" onclick="printResume()">🖨️ PDF में सेव करें / Print</button>
+            <a href="#" class="back-link">← वापस होमपेज पर जाएं</a>
+        </div>
+
+        <!-- राइट साइड: लाइव रिज्यूमे प्रीव्यू -->
+        <div class="resume-preview" id="resumeBox">
+            <h1 id="rName">Your Name</h1>
+            <p class="contact-info" id="rContact">email@example.com | +91-0000000000</p>
+            
+            <h3 class="section-title">Profile Summary</h3>
+            <div class="resume-text" id="rSummary">आपके बारे में जानकारी यहाँ दिखेगी...</div>
+
+            <h3 class="section-title">Education</h3>
+            <div class="resume-text" id="rEdu">आपकी शिक्षा यहाँ दिखेगी...</div>
+
+            <h3 class="section-title">Experience</h3>
+            <div class="resume-text" id="rExp">आपका अनुभव यहाँ दिखेगा...</div>
+
+            <h3 class="section-title">Skills</h3>
+            <div class="resume-text" id="rSkills">आपकी स्किल्स यहाँ दिखेंगी...</div>
+        </div>
+    </div>
+
+    <script>
+        // जैसे-जैसे यूज़र टाइप करेगा, रिज्यूमे में लाइव अपडेट होगा
+        function updateResume() {
+            document.getElementById('rName').innerText = document.getElementById('nameInput').value || "Your Name";
+            document.getElementById('rContact').innerText = document.getElementById('contactInput').value || "email@example.com | +91-0000000000";
+            document.getElementById('rSummary').innerText = document.getElementById('summaryInput').value || "आपके बारे में जानकारी यहाँ दिखेगी...";
+            document.getElementById('rEdu').innerText = document.getElementById('eduInput').value || "आपकी शिक्षा यहाँ दिखेगी...";
+            document.getElementById('rExp').innerText = document.getElementById('expInput').value || "आपका अनुभव यहाँ दिखेगा...";
+            document.getElementById('rSkills').innerText = document.getElementById('skillsInput').value || "आपकी स्किल्स यहाँ दिखेंगी...";
+        }
+
+        // ब्राउज़र के Print ऑप्शन को चालू करने का फंक्शन
+        function printResume() {
+            window.print();
+        }
+    </script>
+
+</body>
+</html>

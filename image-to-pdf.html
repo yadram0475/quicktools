@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image to PDF Converter - QuickTools</title>
+    <!-- PDF बनाने के लिए सुरक्षित फ्री लाइब्रेरी -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; }
+        header { background-color: #007bff; color: white; padding: 15px; text-align: center; }
+        
+        .container { max-width: 500px; margin: 50px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; }
+        
+        input[type="file"] { margin: 20px 0; font-size: 16px; border: 1px dashed #007bff; padding: 20px; width: 100%; box-sizing: border-box; cursor: pointer; background-color: #f9f9f9; }
+        
+        .btn-action { background-color: #dc3545; color: white; border: none; padding: 12px 20px; border-radius: 5px; font-size: 16px; cursor: pointer; width: 100%; font-weight: bold; }
+        .btn-action:hover { background-color: #c82333; }
+        
+        .status-msg { margin-top: 15px; font-size: 14px; color: #28a745; font-weight: bold; display: none; }
+        .back-link { display: block; margin-top: 25px; color: #007bff; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h2>QuickTools.in</h2>
+    </header>
+
+    <div class="container">
+        <h3>📄 Image to PDF Converter</h3>
+        <p>अपनी एक या एक से ज़्यादा फोटो (JPG/PNG) चुनें और उन्हें तुरंत PDF में बदलें।</p>
+        
+        <!-- 'multiple' लगाने से यूज़र एक साथ कई फोटो चुन सकता है -->
+        <input type="file" id="imageInput" accept="image/jpeg, image/png, image/webp" multiple>
+
+        <button class="btn-action" onclick="convertToPDF()">PDF बनाएं और डाउनलोड करें</button>
+
+        <div class="status-msg" id="statusText">✅ आपकी PDF तैयार हो रही है... कृपया प्रतीक्षा करें!</div>
+
+        <a href="#" class="back-link">← वापस होमपेज पर जाएं</a>
+    </div>
+
+    <script>
+        // फोटो को पढ़ने (Read) के लिए प्रॉमिस फंक्शन
+        function readFileAsDataURL(file) {
+            return new Promise((resolve, reject) => {
+                let reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // PDF बनाने का मुख्य फंक्शन
+        async function convertToPDF() {
+            let files = document.getElementById("imageInput").files;
+            let statusText = document.getElementById("statusText");
+
+            if (files.length === 0) {
+                alert("कृपया कम से कम एक फोटो चुनें!");
+                return;
+            }
+
+            statusText.style.display = "block"; // स्टेटस मैसेज दिखाएं
+
+            // jsPDF लाइब्रेरी को चालू करें
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF(); // A4 साइज़ (डिफ़ॉल्ट)
+
+            for (let i = 0; i < files.length; i++) {
+                let file = files[i];
+                let imgData = await readFileAsDataURL(file);
+
+                // अगर फोटो एक से ज़्यादा हैं, तो हर फोटो के लिए नया पेज जोड़ें
+                if (i > 0) {
+                    doc.addPage();
+                }
+
+                // PDF के पेज पर फोटो को सेट करें (margin: 10, चौड़ाई: 190)
+                // ऊँचाई (Height) को 0 रखने से वह फोटो के हिसाब से अपने आप सेट हो जाती है
+                doc.addImage(imgData, 'JPEG', 10, 10, 190, 0);
+            }
+
+            // PDF को सेव/डाउनलोड करें
+            doc.save("QuickTools_Images.pdf");
+            
+            statusText.innerText = "🎉 PDF सफलतापुर्वक डाउनलोड हो गई है!";
+            setTimeout(() => { statusText.style.display = "none"; statusText.innerText = "✅ आपकी PDF तैयार हो रही है... कृपया प्रतीक्षा करें!"; }, 3000);
+        }
+    </script>
+
+</body>
+</html>

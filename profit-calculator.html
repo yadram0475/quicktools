@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profit Calculator - QuickTools</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; }
+        header { background-color: #007bff; color: white; padding: 15px; text-align: center; }
+        
+        .container { max-width: 500px; margin: 40px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; }
+        
+        .input-group { text-align: left; margin-bottom: 20px; }
+        .input-group label { font-weight: bold; color: #333; display: block; margin-bottom: 8px; font-size: 14px; }
+        .input-box { display: flex; align-items: center; border: 1px solid #ccc; border-radius: 5px; overflow: hidden; }
+        .input-box span { background: #e9ecef; padding: 12px 15px; color: #555; font-weight: bold; border-right: 1px solid #ccc; }
+        .input-box input { flex: 1; padding: 12px; border: none; font-size: 16px; outline: none; }
+        
+        .btn-calc { background-color: #28a745; color: white; border: none; padding: 12px; border-radius: 5px; font-size: 16px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px; }
+        .btn-calc:hover { background-color: #218838; }
+
+        /* रिजल्ट बॉक्स का डिज़ाइन */
+        .result-box { margin-top: 25px; padding: 20px; border-radius: 8px; display: none; border: 2px solid transparent; }
+        
+        /* प्रॉफिट होने पर हरा रंग */
+        .profit-style { background-color: #d4edda; border-color: #c3e6cb; color: #155724; }
+        .profit-style h2 { color: #28a745; margin: 10px 0; }
+        
+        /* नुकसान होने पर लाल रंग */
+        .loss-style { background-color: #f8d7da; border-color: #f5c6cb; color: #721c24; }
+        .loss-style h2 { color: #dc3545; margin: 10px 0; }
+        
+        /* न प्रॉफिट न नुकसान */
+        .neutral-style { background-color: #e2e3e5; border-color: #d6d8db; color: #383d41; }
+
+        .back-link { display: block; margin-top: 25px; color: #007bff; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h2>QuickTools.in</h2>
+    </header>
+
+    <div class="container">
+        <h3>📈 Profit & Loss Calculator</h3>
+        <p>अपनी खरीद और बिक्री की कीमत डालें और तुरंत अपना प्रॉफिट या नुकसान (प्रतिशत में) जानें।</p>
+        
+        <!-- खरीद कीमत -->
+        <div class="input-group">
+            <label>सामान की खरीद कीमत (Cost Price):</label>
+            <div class="input-box">
+                <span>₹</span>
+                <input type="number" id="costPrice" placeholder="उदा: 1000">
+            </div>
+        </div>
+        
+        <!-- बिक्री कीमत -->
+        <div class="input-group">
+            <label>सामान की बिक्री कीमत (Selling Price):</label>
+            <div class="input-box">
+                <span>₹</span>
+                <input type="number" id="sellingPrice" placeholder="उदा: 1250">
+            </div>
+        </div>
+
+        <button class="btn-calc" onclick="calculateProfit()">कैलकुलेट करें</button>
+
+        <!-- रिजल्ट दिखाने का बॉक्स -->
+        <div id="resultBox" class="result-box">
+            <h4 id="resultStatus">परिणाम (Result)</h4>
+            <h2 id="resultAmount">₹ 0</h2>
+            <p id="resultPercentage"><strong>0%</strong></p>
+        </div>
+
+        <a href="index.html" class="back-link">← वापस होमपेज पर जाएं</a>
+    </div>
+
+    <script>
+        function calculateProfit() {
+            let cp = parseFloat(document.getElementById('costPrice').value);
+            let sp = parseFloat(document.getElementById('sellingPrice').value);
+            
+            let resultBox = document.getElementById('resultBox');
+            let resultStatus = document.getElementById('resultStatus');
+            let resultAmount = document.getElementById('resultAmount');
+            let resultPercentage = document.getElementById('resultPercentage');
+
+            // चेक करना कि बॉक्स खाली तो नहीं है
+            if (isNaN(cp) || isNaN(sp) || cp < 0 || sp < 0) {
+                alert("कृपया खरीद और बिक्री की सही कीमत डालें!");
+                return;
+            }
+
+            resultBox.style.display = "block";
+            
+            // पुराने कलर हटाना
+            resultBox.classList.remove('profit-style', 'loss-style', 'neutral-style');
+
+            if (sp > cp) {
+                // फायदा (Profit)
+                let profit = sp - cp;
+                let profitPercent = (profit / cp) * 100;
+                
+                resultBox.classList.add('profit-style');
+                resultStatus.innerText = "🎉 बधाई हो! आपको फायदा (Profit) हुआ है:";
+                resultAmount.innerText = "+ ₹ " + profit.toLocaleString('en-IN');
+                resultPercentage.innerHTML = "प्रॉफिट मार्जिन: <strong>" + profitPercent.toFixed(2) + "%</strong>";
+                
+            } else if (cp > sp) {
+                // नुकसान (Loss)
+                let loss = cp - sp;
+                let lossPercent = (loss / cp) * 100;
+                
+                resultBox.classList.add('loss-style');
+                resultStatus.innerText = "⚠️ आपको नुकसान (Loss) हुआ है:";
+                resultAmount.innerText = "- ₹ " + loss.toLocaleString('en-IN');
+                resultPercentage.innerHTML = "नुकसान का प्रतिशत: <strong>" + lossPercent.toFixed(2) + "%</strong>";
+                
+            } else {
+                // कोई फायदा, कोई नुकसान नहीं (No Profit No Loss)
+                resultBox.classList.add('neutral-style');
+                resultStatus.innerText = "⚖️ कोई फायदा या नुकसान नहीं हुआ।";
+                resultAmount.innerText = "₹ 0";
+                resultPercentage.innerHTML = "<strong>0%</strong>";
+            }
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice / Bill Generator - QuickTools</title>
+    
+    <!-- PDF बनाने के लिए सुरक्षित फ्री लाइब्रेरीज़ -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; }
+        header { background-color: #007bff; color: white; padding: 15px; text-align: center; }
+        
+        .container { display: flex; flex-wrap: wrap; max-width: 1200px; margin: 30px auto; gap: 20px; padding: 0 20px; }
+        
+        /* लेफ्ट साइड: इनपुट फॉर्म */
+        .form-box { flex: 1; min-width: 350px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); max-height: 85vh; overflow-y: auto; }
+        .form-box label { font-weight: bold; color: #333; display: block; margin-top: 10px; font-size: 14px; }
+        .form-box input { width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        
+        .item-row { display: flex; gap: 10px; margin-top: 10px; align-items: center; }
+        .item-row input { flex: 1; }
+        .item-row input.qty { flex: 0.5; }
+        .item-row input.price { flex: 0.8; }
+
+        .btn-add { background-color: #17a2b8; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; margin-top: 15px; font-weight: bold; }
+        .btn-down { background-color: #28a745; color: white; border: none; padding: 12px; border-radius: 5px; font-size: 16px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 25px; }
+        .btn-down:hover { background-color: #218838; }
+
+        /* राइट साइड: Invoice का लाइव डिज़ाइन */
+        .preview-box { flex: 1.5; min-width: 500px; display: flex; justify-content: center; }
+        
+        /* असली A4 Invoice का डिज़ाइन */
+        .invoice-card { width: 100%; max-width: 600px; background: #fff; padding: 40px; border-radius: 5px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border: 1px solid #ddd; }
+        
+        .inv-header { display: flex; justify-content: space-between; border-bottom: 2px solid #007bff; padding-bottom: 15px; margin-bottom: 20px; }
+        .inv-header h1 { margin: 0; color: #007bff; font-size: 28px; text-transform: uppercase; }
+        .inv-header p { margin: 5px 0 0; color: #555; font-size: 14px; }
+        
+        .inv-details { display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 14px; }
+        .inv-details h4 { margin: 0 0 5px; color: #333; }
+        
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 14px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #f8f9fa; color: #333; }
+        td.right, th.right { text-align: right; }
+        
+        .inv-total { text-align: right; font-size: 18px; font-weight: bold; color: #d9534f; margin-top: 20px; }
+        
+        .back-link { display: block; margin-top: 20px; color: #007bff; text-decoration: none; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h2>QuickTools.in</h2>
+    </header>
+
+    <div class="container">
+        <!-- लेफ्ट: इनपुट फॉर्म -->
+        <div class="form-box">
+            <h3>🧾 Invoice / Bill Generator</h3>
+            
+            <label>आपकी कंपनी का नाम (Billed By):</label>
+            <input type="text" id="billerName" placeholder="उदा: Sharma Electronics" oninput="updateInvoice()">
+            
+            <label>ग्राहक का नाम (Billed To):</label>
+            <input type="text" id="customerName" placeholder="उदा: Rahul Kumar" oninput="updateInvoice()">
+            
+            <label>बिल नंबर (Invoice No) और तारीख:</label>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="invNo" placeholder="INV-1001" oninput="updateInvoice()">
+                <input type="date" id="invDate" oninput="updateInvoice()">
+            </div>
+
+            <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">
+            <label>सामान (Items):</label>
+            
+            <div id="itemsContainer">
+                <!-- पहला आइटम -->
+                <div class="item-row">
+                    <input type="text" class="item-desc" placeholder="सामान का नाम" oninput="updateInvoice()">
+                    <input type="number" class="item-qty qty" placeholder="Qty" value="1" oninput="updateInvoice()">
+                    <input type="number" class="item-price price" placeholder="Price (₹)" oninput="updateInvoice()">
+                </div>
+            </div>
+            
+            <button class="btn-add" onclick="addItemRow()">+ नया सामान जोड़ें</button>
+
+            <button class="btn-down" onclick="downloadPDF()">⬇️ PDF बिल डाउनलोड करें</button>
+            <a href="index.html" class="back-link">← वापस होमपेज पर जाएं</a>
+        </div>
+
+        <!-- राइट: लाइव प्रीव्यू -->
+        <div class="preview-box">
+            <div class="invoice-card" id="invoicePreview">
+                
+                <div class="inv-header">
+                    <div>
+                        <h1>INVOICE</h1>
+                        <p>No: <strong id="pInvNo">INV-1001</strong></p>
+                        <p>Date: <strong id="pInvDate">__/__/____</strong></p>
+                    </div>
+                    <div style="text-align: right;">
+                        <h2 id="pBiller" style="margin: 0; color: #333;">Your Company</h2>
+                    </div>
+                </div>
+                
+                <div class="inv-details">
+                    <div>
+                        <h4>Billed To:</h4>
+                        <p id="pCustomer" style="margin: 0; color: #555;">Customer Name</p>
+                    </div>
+                </div>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Description (सामान)</th>
+                            <th class="right">Qty</th>
+                            <th class="right">Price (₹)</th>
+                            <th class="right">Amount (₹)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pItemsBody">
+                        <!-- आइटम्स यहाँ लाइव दिखेंगे -->
+                    </tbody>
+                </table>
+                
+                <div class="inv-total">
+                    Grand Total: ₹ <span id="pTotal">0.00</span>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // आज की तारीख डिफ़ॉल्ट सेट करना
+        document.getElementById('invDate').valueAsDate = new Date();
+
+        // नया आइटम बॉक्स जोड़ने का फंक्शन
+        function addItemRow() {
+            let container = document.getElementById("itemsContainer");
+            let row = document.createElement("div");
+            row.className = "item-row";
+            row.innerHTML = `
+                <input type="text" class="item-desc" placeholder="सामान का नाम" oninput="updateInvoice()">
+                <input type="number" class="item-qty qty" placeholder="Qty" value="1" oninput="updateInvoice()">
+                <input type="number" class="item-price price" placeholder="Price (₹)" oninput="updateInvoice()">
+            `;
+            container.appendChild(row);
+        }
+
+        // फॉर्म से डेटा लेकर लाइव Invoice अपडेट करना
+        function updateInvoice() {
+            document.getElementById('pBiller').innerText = document.getElementById('billerName').value || "Your Company";
+            document.getElementById('pCustomer').innerText = document.getElementById('customerName').value || "Customer Name";
+            document.getElementById('pInvNo').innerText = document.getElementById('invNo').value || "INV-XXXX";
+            
+            let d = document.getElementById('invDate').value;
+            document.getElementById('pInvDate').innerText = d ? d.split('-').reverse().join('-') : "";
+
+            // आइटम्स और टोटल कैलकुलेट करना
+            let descs = document.getElementsByClassName('item-desc');
+            let qtys = document.getElementsByClassName('item-qty');
+            let prices = document.getElementsByClassName('item-price');
+            
+            let tbody = document.getElementById('pItemsBody');
+            tbody.innerHTML = ""; // पुरानी लिस्ट साफ़ करें
+            let grandTotal = 0;
+
+            for (let i = 0; i < descs.length; i++) {
+                let desc = descs[i].value;
+                let qty = parseFloat(qtys[i].value) || 0;
+                let price = parseFloat(prices[i].value) || 0;
+                
+                if (desc || price > 0) {
+                    let amount = qty * price;
+                    grandTotal += amount;
+                    
+                    let tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${desc}</td>
+                        <td class="right">${qty}</td>
+                        <td class="right">${price.toFixed(2)}</td>
+                        <td class="right">${amount.toFixed(2)}</td>
+                    `;
+                    tbody.appendChild(tr);
+                }
+            }
+            
+            document.getElementById('pTotal').innerText = grandTotal.toLocaleString('en-IN', {minimumFractionDigits: 2});
+        }
+
+        // पेज लोड होते ही एक बार अपडेट कर दें
+        window.onload = updateInvoice;
+
+        // Invoice को PDF में डाउनलोड करना
+        function downloadPDF() {
+            let invoiceElement = document.getElementById('invoicePreview');
+            let { jsPDF } = window.jspdf;
+
+            // HTML को हाई क्वालिटी इमेज में बदलना
+            html2canvas(invoiceElement, { scale: 2 }).then(canvas => {
+                let imgData = canvas.toDataURL('image/png');
+                
+                // A4 साइज़ की PDF बनाना
+                let pdf = new jsPDF('p', 'mm', 'a4');
+                let pdfWidth = pdf.internal.pageSize.getWidth();
+                let pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+                
+                // इमेज को PDF में सेट करना
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                pdf.save('Invoice_' + (document.getElementById('invNo').value || 'Bill') + '.pdf');
+            });
+        }
+    </script>
+
+</body>
+</html>

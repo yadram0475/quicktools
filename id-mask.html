@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ID Mask & Blur (Privacy Tool) - QuickTools</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; }
+        header { background-color: #007bff; color: white; padding: 15px; text-align: center; }
+        
+        .container { max-width: 700px; margin: 30px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; }
+        
+        input[type="file"] { margin: 15px 0; font-size: 16px; border: 2px dashed #007bff; padding: 15px; width: 100%; box-sizing: border-box; cursor: pointer; background-color: #f9f9f9; }
+        
+        .instructions { background: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; font-size: 14px; margin-bottom: 15px; border: 1px solid #ffeeba; }
+
+        /* कैनवास एरिया */
+        .canvas-container { position: relative; display: inline-block; margin-top: 15px; max-width: 100%; overflow: hidden; border: 1px solid #ccc; border-radius: 5px; background: #eee; }
+        canvas { display: block; max-width: 100%; height: auto; cursor: crosshair; }
+
+        .controls { margin-top: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        .btn-action { background-color: #dc3545; color: white; border: none; padding: 10px 20px; border-radius: 5px; font-size: 15px; cursor: pointer; font-weight: bold; }
+        .btn-action:hover { background-color: #c82333; }
+        
+        .btn-reset { background-color: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 5px; font-size: 15px; cursor: pointer; font-weight: bold; }
+        .btn-reset:hover { background-color: #5a6268; }
+
+        .btn-down { background-color: #28a745; color: white; border: none; padding: 12px 25px; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold; margin-top: 20px; display: inline-block; text-decoration: none; }
+        .btn-down:hover { background-color: #218838; }
+
+        .back-link { display: block; margin-top: 25px; color: #007bff; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h2>QuickTools.in</h2>
+    </header>
+
+    <div class="container">
+        <h3>🪪 ID Mask & Blur (Privacy Tool)</h3>
+        <p>अपनी आधार या पैन कार्ड की फोटो पर संवेदनशील नंबरों को सुरक्षित रूप से छुपाएं (Blackout).</p>
+        
+        <input type="file" id="uploadImage" accept="image/jpeg, image/png, image/webp">
+
+        <div class="instructions" id="instructionBox" style="display: none;">
+            👉 <strong>निर्देश:</strong> माउस से क्लिक करके उस हिस्से पर बॉक्स खींचें (Drag करें) जिसे आप छुपाना चाहते हैं।
+        </div>
+
+        <!-- कैनवास -->
+        <div class="canvas-container" id="canvasBox" style="display: none;">
+            <canvas id="idCanvas"></canvas>
+        </div>
+
+        <div class="controls" id="controlBtns" style="display: none;">
+            <button class="btn-reset" onclick="resetCanvas()">🔄 रीसेट करें (Undo)</button>
+        </div>
+
+        <div>
+            <a id="downloadLink" class="btn-down" style="display: none;" download="masked_id_card.png">⬇️ सुरक्षित फोटो डाउनलोड करें</a>
+        </div>
+
+        <a href="index.html" class="back-link">← वापस होमपेज पर जाएं</a>
+    </div>
+
+    <script>
+        let canvas = document.getElementById('idCanvas');
+        let ctx = canvas.getContext('2d');
+        let img = new Image();
+        let isDrawing = false;
+        let startX, startY;
+        let originalImageData = null;
+
+        // जब यूज़र फोटो चुने
+        document.getElementById('uploadImage').addEventListener('change', function(e) {
+            let file = e.target.files[0];
+            if (file) {
+                let reader = new FileReader();
+                reader.onload = function(event) {
+                    img.onload = function() {
+                        // कैनवास का साइज़ इमेज के हिसाब से सेट करें
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        
+                        // इमेज को कैनवास पर ड्रा करें
+                        ctx.drawImage(img, 0, 0);
+                        
+                        // ओरिजिनल डेटा सेव करें ताकि रीसेट किया जा सके
+                        originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+                        // यूआई एलिमेंट्स दिखाएं
+                        document.getElementById('instructionBox').style.display = 'block';
+                        document.getElementById('canvasBox').style.display = 'inline-block';
+                        document.getElementById('controlBtns').style.display = 'flex';
+                        document.getElementById('downloadLink').style.display = 'inline-block';
+                    }
+                    img.src = event.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // माउस से ड्रैगिंग शुरू होने पर
+        canvas.addEventListener('mousedown', function(e) {
+            isDrawing = true;
+            let rect = canvas.getBoundingClientRect();
+            // स्क्रीन कोऑर्डिनेट्स को असली इमेज के पिक्सल कोऑर्डिनेट्स में बदलना
+            let scaleX = canvas.width / canvas.clientWidth;
+            let scaleY = canvas.height / canvas.clientHeight;
+            
+            startX = (e.clientX - rect.left) * scaleX;
+            startY = (e.clientY - rect.top) * scaleY;
+        });
+
+        // माउस हिलाने पर (प्रीव्यू दिखाने के लिए)
+        canvas.addEventListener('mousemove', function(e) {
+            if (!isDrawing) return;
+
+            let rect = canvas.getBoundingClientRect();
+            let scaleX = canvas.width / canvas.clientWidth;
+            let scaleY = canvas.height / canvas.clientHeight;
+            
+            let currentX = (e.clientX - rect.left) * scaleX;
+            let currentY = (e.clientY - rect.top) * scaleY;
+
+            // पहले वाला स्टेट रीस्टोर करें
+            ctx.putImageData(originalImageData, 0, 0);
+
+            // काला बॉक्स ड्रा करें (Mask)
+            ctx.fillStyle = '#000000'; // काला रंग ताकि नंबर बिल्कुल न दिखे
+            let width = currentX - startX;
+            let height = currentY - startY;
+            ctx.fillRect(startX, startY, width, height);
+        });
+
+        // माउस छोड़ने पर (बॉक्स पक्का करने के लिए)
+        canvas.addEventListener('mouseup', function(e) {
+            if (!isDrawing) return;
+            isDrawing = false;
+
+            let rect = canvas.getBoundingClientRect();
+            let scaleX = canvas.width / canvas.clientWidth;
+            let scaleY = canvas.height / canvas.clientHeight;
+            
+            let endX = (e.clientX - rect.left) * scaleX;
+            let endY = (e.clientY - rect.top) * scaleY;
+
+            // परमानेंट काला बॉक्स अप्लाई करें और नया स्टेट सेव करें
+            ctx.putImageData(originalImageData, 0, 0);
+            ctx.fillStyle = '#000000';
+            let width = endX - startX;
+            let height = endY - startY;
+            ctx.fillRect(startX, startY, width, height);
+            
+            originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            updateDownloadLink();
+        });
+
+        // रीसेट करने का बटन
+        function resetCanvas() {
+            if (img.src) {
+                ctx.drawImage(img, 0, 0);
+                originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                updateDownloadLink();
+            }
+        }
+
+        // डाउनलोड लिंक अपडेट करना
+        function updateDownloadLink() {
+            let dataURL = canvas.toDataURL('image/png');
+            document.getElementById('downloadLink').href = dataURL;
+        }
+    </script>
+
+</body>
+</html>

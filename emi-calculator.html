@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EMI Calculator - QuickTools</title>
+    <!-- चार्ट बनाने के लिए Chart.js लाइब्रेरी -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; }
+        header { background-color: #007bff; color: white; padding: 15px; text-align: center; }
+        
+        .container { display: flex; flex-wrap: wrap; max-width: 900px; margin: 40px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); gap: 30px; }
+        
+        /* लेफ्ट साइड: इनपुट फॉर्म */
+        .input-section { flex: 1; min-width: 300px; }
+        .input-section label { font-weight: bold; color: #333; display: block; margin-top: 15px; }
+        .input-group { display: flex; align-items: center; margin-top: 5px; }
+        .input-group input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; }
+        .input-group span { background: #e9ecef; padding: 10px 15px; border: 1px solid #ccc; border-left: none; border-radius: 0 5px 5px 0; color: #555; font-weight: bold; }
+        
+        .btn-calc { background-color: #28a745; color: white; border: none; padding: 12px; border-radius: 5px; font-size: 16px; cursor: pointer; width: 100%; margin-top: 25px; font-weight: bold; }
+        .btn-calc:hover { background-color: #218838; }
+
+        /* राइट साइड: रिजल्ट और चार्ट */
+        .result-section { flex: 1; min-width: 300px; text-align: center; display: none; }
+        .result-box { background: #e9ecef; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        .result-box h4 { margin: 0; color: #555; font-size: 16px; }
+        .result-box h2 { margin: 5px 0 0; color: #007bff; font-size: 28px; }
+        
+        .details { display: flex; justify-content: space-between; margin-bottom: 20px; }
+        .details div { background: #f8f9fa; padding: 10px; border-radius: 5px; width: 48%; border: 1px solid #ddd; }
+        .details h5 { margin: 0; color: #666; font-size: 14px; }
+        .details p { margin: 5px 0 0; font-weight: bold; font-size: 16px; color: #333; }
+
+        .chart-container { position: relative; height: 250px; width: 100%; display: flex; justify-content: center; }
+        
+        .back-link { display: block; margin-top: 20px; color: #007bff; text-decoration: none; text-align: center; width: 100%; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h2>QuickTools.in</h2>
+    </header>
+
+    <div class="container">
+        <!-- लेफ्ट: इनपुट फॉर्म -->
+        <div class="input-section">
+            <h3>💸 EMI Calculator</h3>
+            <p>होम लोन, कार लोन या पर्सनल लोन की EMI निकालें।</p>
+            
+            <label>लोन की रकम (Loan Amount)</label>
+            <div class="input-group">
+                <input type="number" id="amount" placeholder="उदा: 500000" value="500000">
+                <span>₹</span>
+            </div>
+
+            <label>ब्याज दर (Interest Rate)</label>
+            <div class="input-group">
+                <input type="number" id="rate" placeholder="उदा: 8.5" value="8.5" step="0.1">
+                <span>%</span>
+            </div>
+
+            <label>लोन का समय (Tenure in Years)</label>
+            <div class="input-group">
+                <input type="number" id="years" placeholder="उदा: 5" value="5">
+                <span>Years</span>
+            </div>
+
+            <button class="btn-calc" onclick="calculateEMI()">EMI कैलकुलेट करें</button>
+        </div>
+
+        <!-- राइट: रिजल्ट और चार्ट (शुरुआत में छुपा रहेगा) -->
+        <div class="result-section" id="resultSection">
+            <div class="result-box">
+                <h4>हर महीने की किश्त (Monthly EMI)</h4>
+                <h2 id="emiResult">₹0</h2>
+            </div>
+            
+            <div class="details">
+                <div>
+                    <h5>कुल ब्याज (Total Interest)</h5>
+                    <p id="totalInterest">₹0</p>
+                </div>
+                <div>
+                    <h5>कुल पेमेंट (Total Payment)</h5>
+                    <p id="totalPayment">₹0</p>
+                </div>
+            </div>
+
+            <!-- यहाँ चार्ट (Pie Chart) दिखाई देगा -->
+            <div class="chart-container">
+                <canvas id="emiChart"></canvas>
+            </div>
+        </div>
+
+        <a href="index.html" class="back-link">← वापस होमपेज पर जाएं</a>
+    </div>
+
+    <script>
+        let myChart = null; // चार्ट को स्टोर करने के लिए
+
+        function calculateEMI() {
+            // यूज़र के इनपुट लेना
+            let P = parseFloat(document.getElementById('amount').value);
+            let R = parseFloat(document.getElementById('rate').value);
+            let N = parseFloat(document.getElementById('years').value);
+
+            if (isNaN(P) || isNaN(R) || isNaN(N) || P <= 0 || R <= 0 || N <= 0) {
+                alert("कृपया सभी बॉक्स में सही नंबर डालें!");
+                return;
+            }
+
+            // EMI का गणित (Formula)
+            let r = R / 12 / 100; // महीने का ब्याज
+            let n = N * 12; // कुल महीने
+            
+            // E = P * r * (1 + r)^n / ((1 + r)^n - 1)
+            let EMI = (P * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+            let totalPayment = EMI * n;
+            let totalInterest = totalPayment - P;
+
+            // रिजल्ट को स्क्रीन पर सेट करना
+            document.getElementById('emiResult').innerText = "₹ " + Math.round(EMI).toLocaleString('en-IN');
+            document.getElementById('totalInterest').innerText = "₹ " + Math.round(totalInterest).toLocaleString('en-IN');
+            document.getElementById('totalPayment').innerText = "₹ " + Math.round(totalPayment).toLocaleString('en-IN');
+            
+            // रिजल्ट सेक्शन को दिखाना
+            document.getElementById('resultSection').style.display = "block";
+
+            // चार्ट अपडेट करना
+            updateChart(P, totalInterest);
+        }
+
+        function updateChart(principal, interest) {
+            let ctx = document.getElementById('emiChart').getContext('2d');
+            
+            // अगर पहले से कोई चार्ट है तो उसे हटा दें
+            if (myChart != null) {
+                myChart.destroy();
+            }
+
+            // नया Pie Chart बनाना
+            myChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['मूलधन (Principal)', 'कुल ब्याज (Interest)'],
+                    datasets: [{
+                        data: [principal, Math.round(interest)],
+                        backgroundColor: ['#007bff', '#ffc107'], // नीला और पीला रंग
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+        }
+
+        // पेज लोड होते ही डिफ़ॉल्ट वैल्यू के साथ कैलकुलेट कर दें
+        window.onload = calculateEMI;
+    </script>
+
+</body>
+</html>

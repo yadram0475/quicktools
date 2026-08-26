@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Compressor - QuickTools</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; }
+        header { background-color: #007bff; color: white; padding: 15px; text-align: center; }
+        .container { max-width: 500px; margin: 50px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; }
+        
+        input[type="file"] { margin: 20px 0; font-size: 16px; }
+        .slider-container { margin: 20px 0; text-align: left; }
+        input[type="range"] { width: 100%; }
+        
+        .btn-action { background-color: #28a745; color: white; border: none; padding: 12px 20px; border-radius: 5px; font-size: 16px; cursor: pointer; width: 100%; margin-top: 10px; }
+        .btn-action:hover { background-color: #218838; }
+        
+        #previewBox { margin-top: 20px; display: none; }
+        img#outputImage { max-width: 100%; border: 1px solid #ccc; border-radius: 5px; margin-top: 10px; }
+        
+        .info { background: #e9ecef; padding: 10px; border-radius: 5px; margin-top: 15px; font-size: 14px; color: #333; }
+        
+        .btn-down { background-color: #17a2b8; color: white; border: none; padding: 10px 20px; border-radius: 5px; font-size: 16px; cursor: pointer; width: 100%; margin-top: 15px; display: none; text-decoration: none; display: inline-block; box-sizing: border-box; }
+        .btn-down:hover { background-color: #138496; }
+        
+        .back-link { display: block; margin-top: 20px; color: #007bff; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h2>QuickTools.in</h2>
+    </header>
+
+    <div class="container">
+        <h3>📷 Photo Compressor</h3>
+        <p>बिना क्वालिटी खोए अपनी फोटो का साइज़ (KB) कम करें।</p>
+        
+        <!-- फाइल चुनने का ऑप्शन -->
+        <input type="file" id="uploadImage" accept="image/jpeg, image/png, image/webp">
+
+        <!-- क्वालिटी सेट करने का स्लाइडर -->
+        <div class="slider-container">
+            <label for="qualityRange">फोटो क्वालिटी: <span id="qualityValue">80%</span></label>
+            <input type="range" id="qualityRange" min="10" max="100" value="80" oninput="updateQuality()">
+        </div>
+
+        <button class="btn-action" onclick="compressImage()">कंप्रेस करें (Compress)</button>
+
+        <!-- रिजल्ट दिखाने का बॉक्स -->
+        <div id="previewBox">
+            <div class="info" id="sizeInfo"></div>
+            <img id="outputImage" alt="Compressed Image">
+            <a id="downloadLink" class="btn-down" download="compressed_image.jpg">⬇️ फोटो डाउनलोड करें</a>
+        </div>
+
+        <a href="#" class="back-link">← वापस होमपेज पर जाएं</a>
+    </div>
+
+    <script>
+        let originalImage = new Image();
+        let originalFileSize = 0;
+
+        // जब स्लाइडर घुमाया जाए तो नंबर अपडेट करें
+        function updateQuality() {
+            document.getElementById("qualityValue").innerText = document.getElementById("qualityRange").value + "%";
+        }
+
+        // जब यूज़र कोई फाइल चुने तो उसे लोड करें
+        document.getElementById("uploadImage").addEventListener("change", function(event) {
+            let file = event.target.files[0];
+            if (file) {
+                originalFileSize = (file.size / 1024).toFixed(2); // KB में साइज़
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    originalImage.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // फोटो को कंप्रेस करने का मुख्य फंक्शन
+        function compressImage() {
+            if (!originalImage.src) {
+                alert("कृपया पहले कोई फोटो चुनें!");
+                return;
+            }
+
+            let canvas = document.createElement("canvas");
+            let ctx = canvas.getContext("2d");
+
+            // फोटो की लंबाई-चौड़ाई सेट करें
+            canvas.width = originalImage.width;
+            canvas.height = originalImage.height;
+
+            // Canvas पर फोटो ड्रा करें
+            ctx.drawImage(originalImage, 0, 0, canvas.width, canvas.height);
+
+            // स्लाइडर से क्वालिटी (0.1 से 1.0 के बीच) लें
+            let quality = document.getElementById("qualityRange").value / 100;
+
+            // नई कंप्रेस्ड इमेज बनाएं (JPEG फॉर्मेट)
+            let compressedDataUrl = canvas.toDataURL("image/jpeg", quality);
+
+            // नई फोटो का साइज़ कैलकुलेट करें
+            let base64str = compressedDataUrl.split(',')[1];
+            let compressedSize = ((base64str.length * 3 / 4) / 1024).toFixed(2);
+
+            // रिजल्ट स्क्रीन पर दिखाएं
+            document.getElementById("outputImage").src = compressedDataUrl;
+            document.getElementById("downloadLink").href = compressedDataUrl;
+            
+            document.getElementById("sizeInfo").innerHTML = 
+                "<b>पुराना साइज़:</b> " + originalFileSize + " KB <br>" +
+                "<b>नया साइज़:</b> <span style='color:green;'>" + compressedSize + " KB</span>";
+            
+            document.getElementById("previewBox").style.display = "block";
+            document.getElementById("downloadLink").style.display = "block";
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CGPA to Percentage Calculator - QuickTools</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; }
+        header { background-color: #007bff; color: white; padding: 15px; text-align: center; }
+        
+        .container { max-width: 450px; margin: 50px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; }
+        
+        .input-group { text-align: left; margin-bottom: 20px; }
+        .input-group label { font-weight: bold; color: #333; display: block; margin-bottom: 8px; font-size: 14px; }
+        .input-group input, .input-group select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; box-sizing: border-box; }
+        
+        .btn-calc { background-color: #28a745; color: white; border: none; padding: 12px; border-radius: 5px; font-size: 16px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px; }
+        .btn-calc:hover { background-color: #218838; }
+
+        /* रिजल्ट बॉक्स का डिज़ाइन */
+        .result-box { margin-top: 25px; padding: 20px; background-color: #e9ecef; border-radius: 8px; display: none; border-left: 5px solid #007bff; }
+        .result-box h4 { margin: 0; color: #555; font-size: 16px; }
+        .result-box h2 { margin: 10px 0; color: #007bff; font-size: 32px; font-weight: bold; }
+        .result-box p { margin: 0; font-weight: bold; color: #333; }
+
+        /* डिवीज़न (Division) दिखाने के लिए रंग */
+        .distinction { color: #28a745 !important; } /* हरा रंग */
+        .first-div { color: #17a2b8 !important; } /* नीला रंग */
+        .second-div { color: #ffc107 !important; } /* पीला रंग */
+        .pass-div { color: #dc3545 !important; } /* लाल रंग */
+
+        .back-link { display: block; margin-top: 25px; color: #007bff; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h2>QuickTools.in</h2>
+    </header>
+
+    <div class="container">
+        <h3>🎓 CGPA to Percentage Calculator</h3>
+        <p>अपना CGPA दर्ज करें और तुरंत अपनी सही Percentage (प्रतिशत) जानें।</p>
+        
+        <!-- CGPA इनपुट -->
+        <div class="input-group">
+            <label>अपना CGPA डालें (10 में से):</label>
+            <input type="number" id="cgpaInput" placeholder="उदा: 8.5" step="0.1" min="1" max="10">
+        </div>
+        
+        <!-- फॉर्मूला चुनने का विकल्प -->
+        <div class="input-group">
+            <label>कैलकुलेशन का नियम (Formula) चुनें:</label>
+            <select id="multiplier">
+                <option value="9.5">गुणा 9.5 (CBSE और ज़्यादातर बोर्ड्स)</option>
+                <option value="10">गुणा 10 (कुछ यूनिवर्सिटीज़ / कॉलेज)</option>
+            </select>
+        </div>
+
+        <button class="btn-calc" onclick="calculatePercentage()">प्रतिशत (Percentage) निकालें</button>
+
+        <!-- रिजल्ट दिखाने का बॉक्स -->
+        <div id="resultBox" class="result-box">
+            <h4>आपकी Percentage है:</h4>
+            <h2 id="resultPercent">0%</h2>
+            <p id="resultDivision">डिवीज़न: <span>-</span></p>
+        </div>
+
+        <a href="index.html" class="back-link">← वापस होमपेज पर जाएं</a>
+    </div>
+
+    <script>
+        function calculatePercentage() {
+            let cgpa = parseFloat(document.getElementById('cgpaInput').value);
+            let multiplier = parseFloat(document.getElementById('multiplier').value);
+            
+            let resultBox = document.getElementById('resultBox');
+            let resultPercent = document.getElementById('resultPercent');
+            let resultDivision = document.getElementById('resultDivision');
+
+            // चेक करना कि CGPA सही है या नहीं (0 से 10 के बीच)
+            if (isNaN(cgpa) || cgpa < 0 || cgpa > 10) {
+                alert("कृपया 0 से 10 के बीच का सही CGPA डालें!");
+                return;
+            }
+
+            // Percentage कैलकुलेट करना
+            let percentage = cgpa * multiplier;
+            
+            // रिजल्ट स्क्रीन पर सेट करना (2 दशमलव (decimal) तक)
+            resultPercent.innerText = percentage.toFixed(2) + "%";
+            resultBox.style.display = "block";
+
+            // डिवीज़न (Division) तय करना
+            let divisionText = "";
+            resultPercent.className = ""; // पुराने रंग हटाना
+
+            if (percentage >= 75) {
+                divisionText = "Distinction 🌟";
+                resultPercent.classList.add("distinction");
+            } else if (percentage >= 60) {
+                divisionText = "First Division 🥇";
+                resultPercent.classList.add("first-div");
+            } else if (percentage >= 50) {
+                divisionText = "Second Division 🥈";
+                resultPercent.classList.add("second-div");
+            } else if (percentage >= 33) {
+                divisionText = "Third Division / Pass 🥉";
+                resultPercent.classList.add("pass-div");
+            } else {
+                divisionText = "Fail ❌";
+                resultPercent.classList.add("pass-div");
+            }
+
+            resultDivision.innerHTML = "डिवीज़न / ग्रेड: <strong>" + divisionText + "</strong>";
+        }
+    </script>
+
+</body>
+</html>

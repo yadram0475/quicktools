@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marriage Biodata Maker - QuickTools</title>
+    
+    <!-- HTML को इमेज/पीडीएफ में बदलने के लिए सुरक्षित लाइब्रेरी -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; }
+        header { background-color: #d81b60; color: white; padding: 15px; text-align: center; } /* लाल/गुलाबी थीम शादी के लिए */
+        
+        .container { display: flex; flex-wrap: wrap; max-width: 1200px; margin: 20px auto; gap: 20px; padding: 0 20px; }
+        
+        /* लेफ्ट साइड: फॉर्म */
+        .form-box { flex: 1; min-width: 350px; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); max-height: 85vh; overflow-y: auto; }
+        .form-box h3 { color: #d81b60; margin-top: 0; border-bottom: 2px solid #fce4ec; padding-bottom: 10px; }
+        .form-box h4 { background: #fce4ec; color: #d81b60; padding: 8px; border-radius: 4px; margin-top: 20px; margin-bottom: 10px; font-size: 15px; }
+        
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-weight: bold; color: #444; margin-bottom: 5px; font-size: 13px; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
+        
+        .btn-down { background-color: #d81b60; color: white; border: none; padding: 12px; border-radius: 5px; font-size: 16px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 25px; }
+        .btn-down:hover { background-color: #ad1457; }
+
+        /* राइट साइड: Biodata का लाइव डिज़ाइन */
+        .preview-box { flex: 1.5; min-width: 500px; display: flex; justify-content: center; }
+        
+        /* असली A4 Biodata का डिज़ाइन (Traditional Look) */
+        .biodata-card { width: 100%; max-width: 650px; background: #fff; padding: 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); position: relative; 
+            /* ट्रेडिशनल बॉर्डर */
+            border: 15px solid transparent;
+            border-image: repeating-linear-gradient(45deg, #d81b60, #d81b60 10px, transparent 10px, transparent 20px, #ffb300 20px, #ffb300 30px, transparent 30px, transparent 40px) 15;
+        }
+        
+        /* भगवान का नाम / शुभ विवाह */
+        .bio-om { text-align: center; color: #d81b60; font-size: 24px; font-weight: bold; margin-bottom: 10px; }
+        .bio-title { text-align: center; color: #d81b60; font-size: 28px; text-transform: uppercase; font-weight: bold; margin-bottom: 30px; letter-spacing: 2px; text-decoration: underline; }
+        
+        /* फोटो */
+        .bio-photo-box { position: absolute; top: 40px; right: 40px; width: 110px; height: 140px; border: 2px solid #d81b60; padding: 3px; background: #fff; }
+        .bio-photo-box img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .bio-section { margin-bottom: 25px; }
+        .bio-section h3 { color: #d81b60; border-bottom: 2px dashed #d81b60; padding-bottom: 5px; margin-bottom: 15px; font-size: 20px; width: fit-content; }
+        
+        table.bio-table { width: 100%; border-collapse: collapse; font-size: 15px; }
+        table.bio-table td { padding: 8px 5px; vertical-align: top; }
+        table.bio-table td:first-child { width: 150px; font-weight: bold; color: #333; }
+        table.bio-table td:nth-child(2) { width: 20px; font-weight: bold; color: #d81b60; }
+        table.bio-table td:last-child { color: #555; }
+        
+        .back-link { display: block; margin-top: 20px; color: #007bff; text-decoration: none; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h2>QuickTools.in</h2>
+    </header>
+
+    <div class="container">
+        <!-- लेफ्ट: इनपुट फॉर्म -->
+        <div class="form-box">
+            <h3>💍 Marriage Biodata Maker</h3>
+            <p>अपनी जानकारी भरें। खाली छोड़े गए विकल्प प्रिंट में नहीं आएंगे।</p>
+            
+            <div class="form-group">
+                <label>फोटो चुनें (Upload Photo):</label>
+                <input type="file" id="photoInput" accept="image/jpeg, image/png" onchange="loadPhoto(event)">
+            </div>
+
+            <h4>👤 Personal Details (व्यक्तिगत जानकारी)</h4>
+            <div class="form-group"><label>पूरा नाम (Name):</label> <input type="text" id="iName" oninput="updateBio()"></div>
+            <div class="form-group"><label>जन्म तिथि (Date of Birth):</label> <input type="text" id="iDob" placeholder="उदा: 25th Oct 1995" oninput="updateBio()"></div>
+            <div class="form-group"><label>जन्म समय (Time of Birth):</label> <input type="text" id="iTob" placeholder="उदा: 10:30 AM" oninput="updateBio()"></div>
+            <div class="form-group"><label>जन्म स्थान (Place of Birth):</label> <input type="text" id="iPob" placeholder="उदा: Delhi" oninput="updateBio()"></div>
+            <div class="form-group"><label>कद (Height):</label> <input type="text" id="iHeight" placeholder="उदा: 5 ft 8 in" oninput="updateBio()"></div>
+            <div class="form-group"><label>रक्त समूह (Blood Group):</label> <input type="text" id="iBlood" placeholder="उदा: O+" oninput="updateBio()"></div>
+            <div class="form-group"><label>गोत्र (Gotra):</label> <input type="text" id="iGotra" oninput="updateBio()"></div>
+            <div class="form-group"><label>मांगलिक (Manglik?):</label> 
+                <select id="iManglik" onchange="updateBio()">
+                    <option value="">(Select)</option>
+                    <option value="No">No (नहीं)</option>
+                    <option value="Yes">Yes (हाँ)</option>
+                    <option value="Anshik">Anshik (आंशिक)</option>
+                </select>
+            </div>
+
+            <h4>🎓 Education & Career (शिक्षा और नौकरी)</h4>
+            <div class="form-group"><label>शिक्षा (Education):</label> <input type="text" id="iEdu" placeholder="B.Tech, MBA" oninput="updateBio()"></div>
+            <div class="form-group"><label>नौकरी/पेशा (Occupation):</label> <input type="text" id="iJob" placeholder="Software Engineer at TCS" oninput="updateBio()"></div>
+            <div class="form-group"><label>सालाना आय (Annual Income):</label> <input type="text" id="iIncome" placeholder="12 LPA" oninput="updateBio()"></div>
+
+            <h4>👨‍👩‍👧 Family Details (पारिवारिक जानकारी)</h4>
+            <div class="form-group"><label>पिता का नाम (Father's Name):</label> <input type="text" id="iFName" oninput="updateBio()"></div>
+            <div class="form-group"><label>पिता का पेशा (Father's Occupation):</label> <input type="text" id="iFOcc" oninput="updateBio()"></div>
+            <div class="form-group"><label>माता का नाम (Mother's Name):</label> <input type="text" id="iMName" oninput="updateBio()"></div>
+            <div class="form-group"><label>भाई/बहन (Brothers & Sisters):</label> <input type="text" id="iSiblings" placeholder="1 Brother, 1 Sister" oninput="updateBio()"></div>
+
+            <h4>📞 Contact Details (संपर्क)</h4>
+            <div class="form-group"><label>मोबाइल नंबर (Mobile No):</label> <input type="text" id="iPhone" oninput="updateBio()"></div>
+            <div class="form-group"><label>पता (Address):</label> <input type="text" id="iAddress" oninput="updateBio()"></div>
+
+            <button class="btn-down" onclick="downloadBioPDF()">⬇️ PDF में डाउनलोड करें</button>
+            <a href="index.html" class="back-link">← वापस होमपेज पर जाएं</a>
+        </div>
+
+        <!-- राइट: लाइव प्रीव्यू -->
+        <div class="preview-box">
+            <div class="biodata-card" id="bioPreview">
+                
+                <div class="bio-om">॥ श्री गणेशाय नमः ॥</div>
+                <div class="bio-title">BIODATA</div>
+                
+                <!-- फोटो -->
+                <div class="bio-photo-box">
+                    <img id="pPhoto" src="https://via.placeholder.com/150x200?text=Photo" alt="Profile Photo">
+                </div>
+
+                <!-- Personal Details -->
+                <div class="bio-section">
+                    <h3>Personal Details</h3>
+                    <table class="bio-table" id="tPersonal">
+                        <!-- Rows will be injected here via JS -->
+                    </table>
+                </div>
+
+                <!-- Education & Career -->
+                <div class="bio-section">
+                    <h3>Education & Profession</h3>
+                    <table class="bio-table" id="tEdu"></table>
+                </div>
+
+                <!-- Family Details -->
+                <div class="bio-section">
+                    <h3>Family Details</h3>
+                    <table class="bio-table" id="tFamily"></table>
+                </div>
+
+                <!-- Contact -->
+                <div class="bio-section">
+                    <h3>Contact Details</h3>
+                    <table class="bio-table" id="tContact"></table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // फोटो अपलोड करना
+        function loadPhoto(event) {
+            let file = event.target.files[0];
+            if (file) {
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('pPhoto').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // टेबल की Row (लाइन) बनाने का फंक्शन (अगर खाली है तो नहीं दिखेगा)
+        function makeRow(label, value) {
+            if (value && value.trim() !== "") {
+                return `<tr><td>${label}</td><td>:</td><td>${value}</td></tr>`;
+            }
+            return "";
+        }
+
+        // फॉर्म से डेटा लेकर लाइव Biodata अपडेट करना
+        function updateBio() {
+            // 1. Personal Details
+            let pHTML = "";
+            pHTML += makeRow("Name", document.getElementById('iName').value);
+            pHTML += makeRow("Date of Birth", document.getElementById('iDob').value);
+            pHTML += makeRow("Time of Birth", document.getElementById('iTob').value);
+            pHTML += makeRow("Place of Birth", document.getElementById('iPob').value);
+            pHTML += makeRow("Height", document.getElementById('iHeight').value);
+            pHTML += makeRow("Blood Group", document.getElementById('iBlood').value);
+            pHTML += makeRow("Gotra", document.getElementById('iGotra').value);
+            pHTML += makeRow("Manglik", document.getElementById('iManglik').value);
+            document.getElementById('tPersonal').innerHTML = pHTML || "<tr><td>(Fill details in the form)</td></tr>";
+
+            // 2. Education & Job
+            let eHTML = "";
+            eHTML += makeRow("Education", document.getElementById('iEdu').value);
+            eHTML += makeRow("Occupation", document.getElementById('iJob').value);
+            eHTML += makeRow("Income", document.getElementById('iIncome').value);
+            document.getElementById('tEdu').innerHTML = eHTML || "<tr><td>(Fill details in the form)</td></tr>";
+
+            // 3. Family Details
+            let fHTML = "";
+            fHTML += makeRow("Father's Name", document.getElementById('iFName').value);
+            fHTML += makeRow("Father's Occ.", document.getElementById('iFOcc').value);
+            fHTML += makeRow("Mother's Name", document.getElementById('iMName').value);
+            fHTML += makeRow("Siblings", document.getElementById('iSiblings').value);
+            document.getElementById('tFamily').innerHTML = fHTML || "<tr><td>(Fill details in the form)</td></tr>";
+
+            // 4. Contact
+            let cHTML = "";
+            cHTML += makeRow("Mobile No", document.getElementById('iPhone').value);
+            cHTML += makeRow("Address", document.getElementById('iAddress').value);
+            document.getElementById('tContact').innerHTML = cHTML || "<tr><td>(Fill details in the form)</td></tr>";
+        }
+
+        // पेज लोड होते ही एक बार अपडेट कर दें
+        window.onload = updateBio;
+
+        // Biodata को PDF में डाउनलोड करना
+        function downloadBioPDF() {
+            let bioElement = document.getElementById('bioPreview');
+            let { jsPDF } = window.jspdf;
+
+            // HTML को हाई क्वालिटी इमेज में बदलना
+            html2canvas(bioElement, { scale: 2 }).then(canvas => {
+                let imgData = canvas.toDataURL('image/png');
+                
+                // A4 साइज़ की PDF बनाना
+                let pdf = new jsPDF('p', 'mm', 'a4');
+                let pdfWidth = pdf.internal.pageSize.getWidth();
+                let pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+                
+                // इमेज को PDF में सेट करना (थोड़ा मार्जिन दे सकते हैं या फुल पेज रख सकते हैं)
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                pdf.save('Marriage_Biodata.pdf');
+            });
+        }
+    </script>
+
+</body>
+</html>

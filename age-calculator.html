@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Age Calculator - QuickTools</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; }
+        header { background-color: #007bff; color: white; padding: 15px; text-align: center; }
+        .container { max-width: 400px; margin: 50px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; }
+        input[type="date"] { width: 100%; padding: 10px; margin: 15px 0; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; box-sizing: border-box; }
+        button { background-color: #28a745; color: white; border: none; padding: 12px 20px; border-radius: 5px; font-size: 16px; cursor: pointer; width: 100%; }
+        button:hover { background-color: #218838; }
+        .result { margin-top: 20px; font-size: 18px; font-weight: bold; color: #333; display: none; background: #e9ecef; padding: 15px; border-radius: 5px; }
+        .back-link { display: block; margin-top: 20px; color: #007bff; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h2>QuickTools.in</h2>
+    </header>
+
+    <div class="container">
+        <h3>Age Calculator 📊</h3>
+        <p>अपनी जन्मतिथि (DOB) चुनें:</p>
+        
+        <input type="date" id="dobInput">
+        <button onclick="calculateAge()">उम्र निकालें</button>
+
+        <div class="result" id="resultBox">
+            आपकी उम्र:<br>
+            <span id="ageText" style="color: #d9534f; font-size: 22px;"></span>
+        </div>
+
+        <a href="#" class="back-link">← वापस होमपेज पर जाएं</a>
+    </div>
+
+    <script>
+        function calculateAge() {
+            let dobValue = document.getElementById("dobInput").value;
+            
+            if (!dobValue) {
+                alert("कृपया अपनी जन्मतिथि (Date of Birth) चुनें!");
+                return;
+            }
+
+            let dob = new Date(dobValue);
+            let today = new Date();
+
+            let years = today.getFullYear() - dob.getFullYear();
+            let months = today.getMonth() - dob.getMonth();
+            let days = today.getDate() - dob.getDate();
+
+            // महीने और दिन को एडजस्ट करना (अगर आज का दिन या महीना जन्मतिथि से पीछे है)
+            if (days < 0) {
+                months--;
+                // पिछले महीने के दिनों की संख्या निकालें
+                let prevMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+                days += prevMonth.getDate();
+            }
+
+            if (months < 0) {
+                years--;
+                months += 12;
+            }
+
+            let resultText = years + " साल, " + months + " महीने, और " + days + " दिन";
+            
+            // रिजल्ट दिखाना
+            document.getElementById("ageText").innerText = resultText;
+            document.getElementById("resultBox").style.display = "block";
+        }
+    </script>
+
+</body>
+</html>
