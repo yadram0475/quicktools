@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase Order (PO) Generator - QuickTools</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; color: #333; }
+        header { background-color: #007bff; color: white; padding: 15px; text-align: center; border-radius: 5px; margin-bottom: 20px; }
+        
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        
+        .po-header { display: flex; justify-content: space-between; border-bottom: 2px solid #007bff; padding-bottom: 20px; margin-bottom: 20px; }
+        .po-title h1 { margin: 0; color: #007bff; font-size: 28px; }
+        .po-details input { padding: 6px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; margin-bottom: 5px; width: 180px; }
+        
+        .parties { display: flex; justify-content: space-between; margin-bottom: 30px; }
+        .party-box { width: 45%; }
+        .party-box h4 { margin: 0 0 5px 0; color: #555; }
+        .party-box textarea { width: 100%; height: 80px; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; box-sizing: border-box; }
+
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; font-size: 14px; }
+        th { background-color: #007bff; color: white; }
+        input.table-input { width: 100%; border: none; padding: 5px; box-sizing: border-box; font-size: 14px; }
+        
+        .btn-add { background-color: #17a2b8; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; margin-bottom: 20px; }
+        .btn-add:hover { background-color: #138496; }
+
+        .total-section { text-align: right; font-size: 18px; font-weight: bold; margin-bottom: 30px; }
+
+        .btn-print { background-color: #28a745; color: white; border: none; padding: 12px 25px; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold; display: block; width: 100%; text-align: center; }
+        .btn-print:hover { background-color: #218838; }
+
+        @media print {
+            body { background: white; padding: 0; }
+            header, .btn-add, .btn-print, .back-link, input, textarea { border: none; background: transparent; }
+            .container { box-shadow: none; padding: 0; }
+        }
+
+        .back-link { display: block; margin-top: 25px; color: #007bff; text-decoration: none; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h2>QuickTools.in - Purchase Order Generator</h2>
+    </header>
+
+    <div class="container">
+        <!-- PO ऊपर का हिस्सा -->
+        <div class="po-header">
+            <div class="po-title">
+                <h1>PURCHASE ORDER</h1>
+                <p>खरीद आदेश फॉर्म</p>
+            </div>
+            <div class="po-details">
+                <label><strong>PO Number:</strong></label><br>
+                <input type="text" id="poNumber" value="PO-2026-001"><br>
+                <label><strong>Date:</strong></label><br>
+                <input type="date" id="poDate">
+            </div>
+        </div>
+
+        <!-- वेंडर और खरीदार विवरण -->
+        <div class="parties">
+            <div class="party-box">
+                <h4>Vendor (सप्लायर):</h4>
+                <textarea placeholder="सप्लायर का नाम और पता यहाँ लिखें..."></textarea>
+            </div>
+            <div class="party-box">
+                <h4>Ship To (डिलिवरी का पता):</h4>
+                <textarea placeholder="डिलीवरी का पता और कंपनी विवरण..."></textarea>
+            </div>
+        </div>
+
+        <!-- आइटम टेबल -->
+        <table id="itemTable">
+            <thead>
+                <tr>
+                    <th style="width: 45%;">Item Description (सामग्री)</th>
+                    <th style="width: 15%;">Qty (मात्रा)</th>
+                    <th style="width: 20%;">Unit Price (कीमत)</th>
+                    <th style="width: 20%;">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="text" class="table-input" value="Product Item 1"></td>
+                    <td><input type="number" class="table-input qty" value="1" oninput="calculateTotal()"></td>
+                    <td><input type="number" class="table-input price" value="1000" oninput="calculateTotal()"></td>
+                    <td class="row-total">1000.00</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <button class="btn-add" onclick="addRow()">+ नया आइटम जोड़ें</button>
+
+        <div class="total-section">
+            Grand Total: ₹ <span id="grandTotal">1000.00</span>
+        </div>
+
+        <button class="btn-print" onclick="window.print()">🖨️ Purchase Order प्रिंट / PDF करें</button>
+
+        <a href="index.html" class="back-link">← वापस होमपेज पर जाएं</a>
+    </div>
+
+    <script>
+        // आज की तारीख ऑटोमैटिक सेट करना
+        document.getElementById('poDate').valueAsDate = new Date();
+
+        function addRow() {
+            let table = document.getElementById('itemTable').getElementsByTagName('tbody')[0];
+            let newRow = table.insertRow();
+            newRow.innerHTML = `
+                <td><input type="text" class="table-input" placeholder="आइटम का नाम"></td>
+                <td><input type="number" class="table-input qty" value="1" oninput="calculateTotal()"></td>
+                <td><input type="number" class="table-input price" value="0" oninput="calculateTotal()"></td>
+                <td class="row-total">0.00</td>
+            `;
+        }
+
+        function calculateTotal() {
+            let rows = document.querySelectorAll('#itemTable tbody tr');
+            let grandTotal = 0;
+
+            rows.forEach(row => {
+                let qty = parseFloat(row.querySelector('.qty').value) || 0;
+                let price = parseFloat(row.querySelector('.price').value) || 0;
+                let total = qty * price;
+                row.querySelector('.row-total').innerText = total.toFixed(2);
+                grandTotal += total;
+            });
+
+            document.getElementById('grandTotal').innerText = grandTotal.toFixed(2);
+        }
+    </script>
+
+</body>
+</html>

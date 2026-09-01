@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delivery Challan Generator - QuickTools</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; color: #333; }
+        header { background-color: #007bff; color: white; padding: 15px; text-align: center; border-radius: 5px; margin-bottom: 20px; }
+        
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        
+        .challan-header { display: flex; justify-content: space-between; border-bottom: 2px solid #007bff; padding-bottom: 20px; margin-bottom: 20px; }
+        .challan-title h1 { margin: 0; color: #007bff; font-size: 26px; }
+        .challan-details input { padding: 6px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; margin-bottom: 5px; width: 180px; }
+        
+        .transport-info { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+        .transport-info div { flex: 1; min-width: 200px; }
+        .transport-info input { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+
+        .parties { display: flex; justify-content: space-between; margin-bottom: 30px; }
+        .party-box { width: 48%; }
+        .party-box h4 { margin: 0 0 5px 0; color: #555; }
+        .party-box textarea { width: 100%; height: 75px; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; box-sizing: border-box; }
+
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; font-size: 14px; }
+        th { background-color: #007bff; color: white; }
+        input.table-input { width: 100%; border: none; padding: 5px; box-sizing: border-box; font-size: 14px; }
+        
+        .btn-add { background-color: #17a2b8; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; margin-bottom: 20px; }
+        .btn-add:hover { background-color: #138496; }
+
+        .btn-print { background-color: #28a745; color: white; border: none; padding: 12px 25px; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold; display: block; width: 100%; text-align: center; }
+        .btn-print:hover { background-color: #218838; }
+
+        @media print {
+            body { background: white; padding: 0; }
+            header, .btn-add, .btn-print, .back-link, input, textarea { border: none; background: transparent; }
+            .container { box-shadow: none; padding: 0; }
+        }
+
+        .back-link { display: block; margin-top: 25px; color: #007bff; text-decoration: none; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h2>QuickTools.in - Delivery Challan Generator</h2>
+    </header>
+
+    <div class="container">
+        <!-- चालान हेडर -->
+        <div class="challan-header">
+            <div class="challan-title">
+                <h1>DELIVERY CHALLAN</h1>
+                <p>डिलीवरी चालान फॉर्म</p>
+            </div>
+            <div class="challan-details">
+                <label><strong>Challan No:</strong></label><br>
+                <input type="text" id="challanNo" value="DC-2026-001"><br>
+                <label><strong>Date:</strong></label><br>
+                <input type="date" id="challanDate">
+            </div>
+        </div>
+
+        <!-- ट्रांसपोर्ट विवरण -->
+        <div class="transport-info">
+            <div>
+                <label><strong>Vehicle Number (वाहन संख्या):</strong></label><br>
+                <input type="text" placeholder="उदा: UP-32-AB-1234">
+            </div>
+            <div>
+                <label><strong>Dispatch Through (माध्यम):</strong></label><br>
+                <input type="text" placeholder="उदा: Transport / Hand Delivery">
+            </div>
+        </div>
+
+        <!-- भेजने और प्राप्त करने वाले का पता -->
+        <div class="parties">
+            <div class="party-box">
+                <h4>Consignor (प्रेषक / भेजने वाला):</h4>
+                <textarea placeholder="अपनी कंपनी का नाम और पता लिखें..."></textarea>
+            </div>
+            <div class="party-box">
+                <h4>Consignee (प्राप्तकर्ता / खरीदार):</h4>
+                <textarea placeholder="खरीदार का नाम और डिलीवरी पता लिखें..."></textarea>
+            </div>
+        </div>
+
+        <!-- आइटम टेबल -->
+        <table id="itemTable">
+            <thead>
+                <tr>
+                    <th style="width: 55%;">Item Description (सामग्री का विवरण)</th>
+                    <th style="width: 20%;">Unit (इकाई)</th>
+                    <th style="width: 25%;">Quantity (मात्रा)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="text" class="table-input" value="Cardboard Boxes"></td>
+                    <td><input type="text" class="table-input" value="Pcs"></td>
+                    <td><input type="number" class="table-input" value="50"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <button class="btn-add" onclick="addRow()">+ नया आइटम जोड़ें</button>
+
+        <button class="btn-print" onclick="window.print()">🖨️ Delivery Challan प्रिंट / PDF करें</button>
+
+        <a href="index.html" class="back-link">← वापस होमपेज पर जाएं</a>
+    </div>
+
+    <script>
+        // आज की तारीख ऑटोमैटिक सेट करना
+        document.getElementById('challanDate').valueAsDate = new Date();
+
+        function addRow() {
+            let table = document.getElementById('itemTable').getElementsByTagName('tbody')[0];
+            let newRow = table.insertRow();
+            newRow.innerHTML = `
+                <td><input type="text" class="table-input" placeholder="आइटम का नाम"></td>
+                <td><input type="text" class="table-input" placeholder="Pcs/Kg"></td>
+                <td><input type="number" class="table-input" value="1"></td>
+            `;
+        }
+    </script>
+
+</body>
+</html>
