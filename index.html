@@ -3,96 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuickTools - 100% Free & Safe Online Tools</title>
+    <title>Khojiman.com - Free Online Tools & Utilities</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f4f8; margin: 0; padding: 0; color: #333; }
-        header { background: linear-gradient(135deg, #0056b3, #007bff); color: white; padding: 30px 20px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        header h1 { margin: 0; font-size: 36px; letter-spacing: 1px; }
-        header p { margin: 10px 0 0; font-size: 18px; opacity: 0.9; }
-        
-        .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
-        
-        .category-title { font-size: 24px; color: #0056b3; border-bottom: 2px solid #007bff; padding-bottom: 8px; margin-top: 40px; margin-bottom: 20px; }
-        
-        .tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
-        
-        .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); text-align: center; transition: all 0.3s ease; display: flex; flex-direction: column; justify-content: space-between; border-top: 4px solid #007bff; }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
-        
-        .card h3 { margin: 10px 0; font-size: 20px; color: #222; }
-        .card p { font-size: 14px; color: #666; margin-bottom: 20px; }
-        
-        .btn { background-color: #28a745; color: white; text-decoration: none; padding: 10px 15px; border-radius: 5px; font-weight: bold; transition: 0.2s; display: inline-block; }
-        .btn:hover { background-color: #218838; }
-        .btn.pending { background-color: #6c757d; cursor: not-allowed; }
-        
-        footer { text-align: center; padding: 25px 20px; background-color: #333; color: white; margin-top: 50px; }
-        footer a { color: #aaa; text-decoration: none; margin: 0 10px; font-size: 14px; transition: 0.2s; }
-        footer a:hover { color: #fff; text-decoration: underline; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background-color: #f4f6f9;
+            color: #333;
+            line-height: 1.6;
+        }
+        header {
+            background: linear-gradient(135deg, #0066cc, #004080);
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+        }
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .category-title {
+            font-size: 1.5rem;
+            margin: 30px 0 15px 0;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #0066cc;
+            color: #0066cc;
+        }
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-top: 4px solid #0066cc;
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #222;
+        }
+        .card p {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #28a745;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        .btn.coming-soon {
+            background-color: #6c757d;
+            pointer-events: none;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #222;
+            color: white;
+            margin-top: 50px;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>🚀 QuickTools.in</h1>
+        <h1>🚀 Khojiman.com</h1>
         <p>100% Free, Secure & No Login Required. All tools run directly in your browser!</p>
     </header>
 
     <div class="container">
-
-        <!-- कैटेगरी 1: PDF Tools -->
+        <!-- PDF Tools -->
         <h2 class="category-title">📄 PDF Tools (पीडीएफ टूल्स)</h2>
         <div class="tools-grid">
-            <div class="card"><h3>🖼️ JPG to PDF</h3><p>फोटो को तुरंत पीडीएफ में बदलें।</p><a href="image-to-pdf.html" class="btn">Tool खोलें</a></div>
-            <div class="card"><h3>🧾 Invoice / Bill PDF</h3><p>कस्टमर के लिए पक्का बिल बनाएं।</p><a href="invoice-maker.html" class="btn">Tool खोलें</a></div>
-            <div class="card"><h3>🔐 Protect PDF</h3><p>पीडीएफ पर पासवर्ड लगाएं।</p><a href="#" class="btn pending">Coming Soon</a></div>
-            <div class="card"><h3>🔓 Unlock PDF</h3><p>पीडीएफ से पासवर्ड हटाएं।</p><a href="#" class="btn pending">Coming Soon</a></div>
-            <div class="card"><h3>✍️ Edit PDF</h3><p>पीडीएफ में टेक्स्ट/साइन जोड़ें।</p><a href="#" class="btn pending">Coming Soon</a></div>
-            <div class="card"><h3>📉 Compress PDF</h3><p>पीडीएफ का साइज कम करें।</p><a href="#" class="btn pending">Coming Soon</a></div>
+            <div class="card" style="border-top-color: #0066cc;">
+                <h3>JPG to PDF</h3>
+                <p>फोटो को तुरंत पीडीएफ में बदलें।</p>
+                <a href="jpg-to-pdf.html" class="btn">Tool खोलें</a>
+            </div>
+            <div class="card" style="border-top-color: #0066cc;">
+                <h3>Invoice / Bill PDF</h3>
+                <p>कस्टमर के लिए फ़ास्ट बिल बनाएं।</p>
+                <a href="invoice.html" class="btn">Tool खोलें</a>
+            </div>
+            <div class="card" style="border-top-color: #6c757d;">
+                <h3>Protect PDF</h3>
+                <p>पीडीएफ पर पासवर्ड लगाएं।</p>
+                <a href="#" class="btn coming-soon">Coming Soon</a>
+            </div>
+            <div class="card" style="border-top-color: #6c757d;">
+                <h3>Unlock PDF</h3>
+                <p>पीडीएफ से पासवर्ड हटाएं।</p>
+                <a href="#" class="btn coming-soon">Coming Soon</a>
+            </div>
         </div>
 
-        <!-- कैटेगरी 2: Photo & Design Tools -->
-        <h2 class="category-title">📷 Photo & Design Tools</h2>
+        <!-- Photo & Design Tools -->
+        <h2 class="category-title">🖼️ Photo & Design Tools (फोटो टूल्स)</h2>
         <div class="tools-grid">
-            <div class="card"><h3>📉 Photo Compressor</h3><p>इमेज का साइज (KB) कम करें।</p><a href="photo-compressor.html" class="btn">Tool खोलें</a></div>
-            <div class="card"><h3>🧹 Background Remover</h3><p>फोटो का बैकग्राउंड हटाएं (AI).</p><a href="background-remover.html" class="btn">Tool खोलें</a></div>
-            <div class="card"><h3>📸 Passport Photo</h3><p>पासपोर्ट साइज फोटो बनाएं।</p><a href="passport-photo.html" class="btn">Tool खोलें</a></div>
-            <div class="card"><h3>🪪 ID Card Maker</h3><p>प्रोफेशनल ID कार्ड डिजाइन करें।</p><a href="id-card-maker.html" class="btn">Tool खोलें</a></div>
-            <div class="card"><h3>🪪 ID Mask / Blur</h3><p>आधार/पैन नंबर को ब्लर करें।</p><a href="id-mask.html" class="btn">Tool खोलें</a></div>
-            <div class="card"><h3>🎨 Poster / Status Maker</h3><p>सुंदर सोशल मीडिया स्टेटस बनाएं।</p><a href="poster-maker.html" class="btn">Tool खोलें</a></div>
-            <div class="card"><h3>💍 Marriage Biodata</h3><p>शादी के लिए बायोडाटा बनाएं।</p><a href="marriage-biodata.html" class="btn">Tool खोलें</a></div>
-            <div class="card"><h3>🖨️ <div class="card"><h3>🖨️ PVC Card Print</h3><p>A4 पेज पर PVC लेआउट सेट करें।</p><a href="pvc-card-print.html" class="btn">Tool खोलें</a></div>
-            <div class="card"><h3>🧑‍💼 <div class="card"><h3>🧑‍💼 Visiting Card Maker</h3><p>बिज़नेस कार्ड जनरेट करें।</p><a href="visiting-card.html" class="btn">Tool खोलें</a></div>
-            <div class="card-back"></div>
+            <div class="card" style="border-top-color: #e67e22;">
+                <h3>Image Resizer</h3>
+                <p>फोटो का साइज (KB/MB) कम करें।</p>
+                <a href="#" class="btn coming-soon">Coming Soon</a>
+            </div>
+            <div class="card" style="border-top-color: #e67e22;">
+                <h3>Background Remover</h3>
+                <p>फोटो का बैकग्राउंड तुरंत हटाएं।</p>
+                <a href="#" class="btn coming-soon">Coming Soon</a>
+            </div>
         </div>
-
-        <!-- कैटेगरी 3: Finance & Utility Tools -->
-        <h2 class="category-title">💰 Finance & Utility Tools</h2>
-        <div class="tools-grid">
-            <div class="card"><h3>📊 Age Calculator</h3><p>अपनी सही उम्र की गणना करें।</p><a href="age-calculator.html" class="btn">Tool खोलें</a></div>
-            <div class="card"><h3>🔲 QR Code Generator</h3><p>लिंक या टेक्स्ट से QR बनाएं।</p><a href="qr-generator.html" class="btn">Tool खोलें</a></div>
-            <div class="card"><h3>📝 Resume Maker</h3><p>प्रोफेशनल रिज्यूमे / CV बनाएं।</p><a href="resume-maker.html" class="btn">Tool खोलें</a></div>
-            <div class="card"><h3>💸 EMI Calculator</h3><p>लोन की EMI कैलकुलेट करें।</p><a href="emi-calculator.html" class="btn">Tool खोलें</a></div>
-            <div class="card"><h3>📈 Profit Calculator</h3><p>बिज़नेस प्रॉफिट मार्जिन निकालें।</p><a href="profit-calculator.html" class="btn">Tool खोलें</a></div>
-            <div class="card"><h3>🎓 CGPA ↔ Percentage</h3><p>CGPA को प्रतिशत में बदलें।</p><a href="cgpa-calculator.html" class="btn">Tool खोलें</a></div>
-            <div class="card"><h3>🛒 <div class="card"><h3>🛒 Purchase Order (PO)</h3><p>सप्लायर के लिए PO जनरेट करें।</p><a href="purchase-order.html" class="btn">Tool खोलें</a></div>
-            <div class="card"><h3>🚚 <div class="card"><h3>🚚 Delivery Challan</h3><p>डिलीवरी चालान फॉर्म बनाएं।</p><a href="delivery-challan.html" class="btn">Tool खोलें</a></div>
-        </div>
-
-        <!-- कैटेगरी 4: Forms -->
-        <h2 class="category-title">📋 Forms & Layouts</h2>
-        <div class="tools-grid">
-            <div class="card"><h3>📄 <div class="card"><h3>📄 New PAN Form 93</h3><p>नया पैन कार्ड फॉर्म भरें/प्रिंट करें।</p><a href="pan-form.html" class="btn">Tool खोलें</a></div>
-
     </div>
 
     <footer>
-        <p style="margin-bottom: 12px;">&copy; 2026 QuickTools.in | 100% Client-Side, Safe & Secure</p>
-        <div>
-            <a href="privacy-policy.html">Privacy Policy</a> |
-            <a href="terms.html">Terms of Service</a> |
-            <a href="contact.html">Contact Us</a>
-        </div>
+        <p>&copy; 2026 Khojiman.com. All Rights Reserved.</p>
     </footer>
 
 </body>
