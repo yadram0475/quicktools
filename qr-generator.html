@@ -3,93 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Code Generator - QuickTools</title>
-    <!-- QR Code बनाने के लिए सुरक्षित फ्री लाइब्रेरी -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <title>QR Code Generator - Khojiman.com</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; }
-        header { background-color: #007bff; color: white; padding: 15px; text-align: center; }
-        .container { max-width: 400px; margin: 50px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; }
-        input[type="text"] { width: 100%; padding: 12px; margin: 15px 0; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; box-sizing: border-box; }
-        .btn-gen { background-color: #28a745; color: white; border: none; padding: 12px 20px; border-radius: 5px; font-size: 16px; cursor: pointer; width: 100%; }
-        .btn-gen:hover { background-color: #218838; }
-        
-        #qrCodeBox { margin-top: 20px; display: flex; justify-content: center; align-items: center; min-height: 200px; }
-        
-        .btn-down { background-color: #17a2b8; color: white; border: none; padding: 10px 20px; border-radius: 5px; font-size: 16px; cursor: pointer; width: 100%; margin-top: 15px; display: none; }
-        .btn-down:hover { background-color: #138496; }
-        
-        .back-link { display: block; margin-top: 20px; color: #007bff; text-decoration: none; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background-color: #f4f6f9;
+            color: #333;
+            line-height: 1.6;
+        }
+        header {
+            background: linear-gradient(135deg, #0066cc, #004080);
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+        }
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+        header p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #0066cc;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            background-color: #28a745;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #218838;
+        }
+        .result {
+            margin-top: 25px;
+            display: none;
+        }
+        .result img {
+            margin-top: 15px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 4px;
+            background: white;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #0066cc;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #222;
+            color: white;
+            margin-top: 50px;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
 
     <header>
-        <h2>QuickTools.in</h2>
+        <h1>📱 QR Code Generator</h1>
+        <p>किसी भी लिंक या टेक्स्ट का तुरंत फ्री QR Code बनाएं</p>
     </header>
 
     <div class="container">
-        <h3>QR Code Generator 🔲</h3>
-        <p>कोई भी लिंक (URL) या टेक्स्ट डालें:</p>
-        
-        <input type="text" id="qrInput" placeholder="जैसे: https://google.com या आपका नाम">
-        <button class="btn-gen" onclick="generateQR()">QR Code बनाएं</button>
+        <div class="form-group">
+            <label for="qrInput">वेबसाइट लिंक या टेक्स्ट दर्ज करें:</label>
+            <input type="text" id="qrInput" placeholder="जैसे: https://khojiman.com">
+        </div>
+        <button class="btn" onclick="generateQR()">QR Code बनाएं</button>
 
-        <!-- यहाँ QR Code दिखाई देगा -->
-        <div id="qrCodeBox"></div>
+        <div class="result" id="resultBox">
+            <h3>आपका QR Code तैयार है:</h3>
+            <img id="qrImage" src="" alt="QR Code">
+            <p style="margin-top: 10px; font-size: 0.9rem; color: #666;">इसे डाउनलोड करने के लिए इमेज पर राइट-क्लिक करें।</p>
+        </div>
 
-        <!-- डाउनलोड बटन (यह QR बनने के बाद दिखेगा) -->
-        <button class="btn-down" id="downloadBtn" onclick="downloadQR()">⬇️ QR Code डाउनलोड करें</button>
-
-        <a href="#" class="back-link">← वापस होमपेज पर जाएं</a>
+        <br>
+        <a href="index.html" class="back-link">&larr; होम पेज पर वापस जाएं</a>
     </div>
+
+    <footer>
+        <p>&copy; 2026 Khojiman.com. All Rights Reserved.</p>
+    </footer>
 
     <script>
         function generateQR() {
-            let qrText = document.getElementById("qrInput").value;
-            let qrBox = document.getElementById("qrCodeBox");
-            let downloadBtn = document.getElementById("downloadBtn");
-
-            // अगर बॉक्स खाली है तो अलर्ट दें
-            if (!qrText) {
-                alert("कृपया कोई लिंक या टेक्स्ट डालें!");
+            const inputVal = document.getElementById('qrInput').value.trim();
+            if (!inputVal) {
+                alert('कृपया कोई लिंक या टेक्स्ट दर्ज करें!');
                 return;
             }
 
-            // पुराना QR कोड साफ करें
-            qrBox.innerHTML = "";
+            const qrImage = document.getElementById('qrImage');
+            const resultBox = document.getElementById('resultBox');
 
-            // नया QR कोड बनाएं
-            new QRCode(qrBox, {
-                text: qrText,
-                width: 200,
-                height: 200,
-                colorDark : "#000000",
-                colorLight : "#ffffff",
-                correctLevel : QRCode.CorrectLevel.H
-            });
-
-            // डाउनलोड बटन दिखाएं
-            downloadBtn.style.display = "block";
-        }
-
-        function downloadQR() {
-            // QR Code की इमेज निकालें
-            let qrImage = document.querySelector("#qrCodeBox img");
-            let canvas = document.querySelector("#qrCodeBox canvas");
-            
-            let link = document.createElement("a");
-            link.download = "QuickTools_QRCode.png";
-
-            if (qrImage && qrImage.getAttribute("src") !== null) {
-                link.href = qrImage.src;
-                link.click();
-            } else if (canvas) {
-                link.href = canvas.toDataURL("image/png");
-                link.click();
-            } else {
-                alert("QR Code डाउनलोड करने में समस्या आ रही है।");
-            }
+            // Free QR code API
+            qrImage.src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(inputVal)}`;
+            resultBox.style.display = 'block';
         }
     </script>
 
