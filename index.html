@@ -14,77 +14,78 @@
         body {
             background-color: #f4f6f9;
             color: #333;
-            line-height: 1.6;
+            line-height: 1.4;
         }
         header {
             background: linear-gradient(135deg, #0066cc, #004080);
             color: white;
             text-align: center;
-            padding: 40px 20px;
+            padding: 15px 10px;
         }
         header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+            font-size: 1.8rem;
+            margin-bottom: 3px;
         }
         header p {
-            font-size: 1.1rem;
+            font-size: 0.9rem;
             opacity: 0.9;
         }
         .container {
             max-width: 1200px;
-            margin: 30px auto;
-            padding: 0 20px;
+            margin: 15px auto;
+            padding: 0 15px;
         }
         .category-title {
-            font-size: 1.5rem;
-            margin: 30px 0 15px 0;
-            padding-bottom: 5px;
+            font-size: 1.2rem;
+            margin: 15px 0 8px 0;
+            padding-bottom: 3px;
             border-bottom: 2px solid #0066cc;
             color: #0066cc;
         }
         .tools-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
         }
         .card {
             background: white;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            border-top: 4px solid #0066cc;
-            transition: transform 0.2s;
-        }
-        .card:hover {
-            transform: translateY(-5px);
+            border-radius: 6px;
+            padding: 12px 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+            border-top: 3px solid #0066cc;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
         .card h3 {
-            font-size: 1.2rem;
-            margin-bottom: 10px;
+            font-size: 1.05rem;
+            margin-bottom: 5px;
             color: #222;
         }
         .card p {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: #666;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
         .btn {
             display: inline-block;
             background-color: #28a745;
             color: white;
-            padding: 8px 15px;
+            padding: 5px 10px;
             border-radius: 4px;
             text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: bold;
+            text-align: center;
+            align-self: flex-start;
         }
         footer {
             text-align: center;
-            padding: 20px;
+            padding: 10px;
             background-color: #222;
             color: white;
-            margin-top: 50px;
-            font-size: 0.9rem;
+            margin-top: 25px;
+            font-size: 0.85rem;
         }
     </style>
 </head>
@@ -97,86 +98,112 @@
 
     <div class="container">
         <!-- Calculators & Finance Tools -->
-        <h2 class="category-title">🧮 Calculators & Finance (कैलकुलेटर टूल्स)</h2>
+        <h2 class="category-title">🧮 Calculators & Finance</h2>
         <div class="tools-grid">
             <div class="card" style="border-top-color: #28a745;">
-                <h3>Age Calculator</h3>
-                <p>सटीक उम्र, महीने और दिन कैलकुलेट करें।</p>
+                <div>
+                    <h3>Age Calculator</h3>
+                    <p>सटीक उम्र, महीने और दिन निकालें।</p>
+                </div>
                 <a href="age-calculator.html" class="btn">Tool खोलें</a>
             </div>
             <div class="card" style="border-top-color: #28a745;">
-                <h3>EMI Calculator</h3>
-                <p>लोन की मंथली ईएमआई कैलकुलेट करें।</p>
+                <div>
+                    <h3>EMI Calculator</h3>
+                    <p>मंथली ईएमआई कैलकुलेट करें।</p>
+                </div>
                 <a href="emi-calculator.html" class="btn">Tool खोलें</a>
             </div>
             <div class="card" style="border-top-color: #28a745;">
-                <h3>CGPA Calculator</h3>
-                <p>CGPA को आसानी से परसेंटेज में बदलें।</p>
+                <div>
+                    <h3>CGPA Calculator</h3>
+                    <p>CGPA को परसेंटेज में बदलें।</p>
+                </div>
                 <a href="cgpa-calculator.html" class="btn">Tool खोलें</a>
             </div>
             <div class="card" style="border-top-color: #28a745;">
-                <h3>Delivery Challan</h3>
-                <p>डिलीवरी चालान पर्ची तुरंत तैयार करें।</p>
+                <div>
+                    <h3>Delivery Challan</h3>
+                    <p>डिलीवरी चालान पर्ची तैयार करें।</p>
+                </div>
                 <a href="delivery-challan.html" class="btn">Tool खोलें</a>
             </div>
         </div>
 
         <!-- PDF Tools -->
-        <h2 class="category-title">📄 PDF Tools (पीडीएफ टूल्स)</h2>
+        <h2 class="category-title">📄 PDF Tools</h2>
         <div class="tools-grid">
             <div class="card" style="border-top-color: #0066cc;">
-                <h3>JPG to PDF</h3>
-                <p>फोटो को तुरंत पीडीएफ में बदलें।</p>
+                <div>
+                    <h3>JPG to PDF</h3>
+                    <p>फोटो को तुरंत पीडीएफ बनाएं।</p>
+                </div>
                 <a href="image-to-pdf.html" class="btn">Tool खोलें</a>
             </div>
             <div class="card" style="border-top-color: #0066cc;">
-                <h3>Invoice / Bill PDF</h3>
-                <p>कस्टमर के लिए फ़ास्ट बिल बनाएं।</p>
+                <div>
+                    <h3>Invoice / Bill PDF</h3>
+                    <p>कस्टमर के लिए बिल बनाएं।</p>
+                </div>
                 <a href="invoice-maker.html" class="btn">Tool खोलें</a>
             </div>
         </div>
 
         <!-- Photo & Design Tools -->
-        <h2 class="category-title">🖼️ Photo & Design Tools (फोटो टूल्स)</h2>
+        <h2 class="category-title">🖼️ Photo & Design Tools</h2>
         <div class="tools-grid">
             <div class="card" style="border-top-color: #e67e22;">
-                <h3>Passport Photo Maker</h3>
-                <p>पासपोर्ट साइज फोटो तुरंत बनाएं।</p>
+                <div>
+                    <h3>Passport Photo Maker</h3>
+                    <p>पासपोर्ट साइज फोटो बनाएं।</p>
+                </div>
                 <a href="passport-photo.html" class="btn">Tool खोलें</a>
             </div>
             <div class="card" style="border-top-color: #e67e22;">
-                <h3>Photo Compressor</h3>
-                <p>फोटो का साइज (KB/MB) कम करें।</p>
+                <div>
+                    <h3>Photo Compressor</h3>
+                    <p>फोटो का साइज कम करें।</p>
+                </div>
                 <a href="photo-compressor.html" class="btn">Tool खोलें</a>
             </div>
             <div class="card" style="border-top-color: #e67e22;">
-                <h3>Poster Maker</h3>
-                <p>आकर्षक पोस्टर और डिज़ाइन बनाएं।</p>
+                <div>
+                    <h3>Poster Maker</h3>
+                    <p>आकर्षक पोस्टर डिजाइन करें।</p>
+                </div>
                 <a href="poster-maker.html" class="btn">Tool खोलें</a>
             </div>
             <div class="card" style="border-top-color: #e67e22;">
-                <h3>ID Card & Mask Maker</h3>
-                <p>आईडी कार्ड और मास्क डिजाइन करें।</p>
+                <div>
+                    <h3>ID Card & Mask</h3>
+                    <p>आईडी कार्ड डिजाइन करें।</p>
+                </div>
                 <a href="id-card-maker.html" class="btn">Tool खोलें</a>
             </div>
         </div>
 
         <!-- Other Utilities -->
-        <h2 class="category-title">📝 Other Utilities (अन्य उपयोगी टूल्स)</h2>
+        <h2 class="category-title">📝 Other Utilities</h2>
         <div class="tools-grid">
             <div class="card" style="border-top-color: #9b59b6;">
-                <h3>QR Code Generator</h3>
-                <p>लिंक या टेक्स्ट का तुरंत क्यूआर कोड बनाएं।</p>
+                <div>
+                    <h3>QR Code Generator</h3>
+                    <p>लिंक का क्यूआर कोड बनाएं।</p>
+                </div>
                 <a href="qr-generator.html" class="btn">Tool खोलें</a>
             </div>
             <div class="card" style="border-top-color: #9b59b6;">
-                <h3>Marriage Biodata</h3>
-                <p>विवाह के लिए सुंदर बायोडाटा बनाएं।</p>
+                <div>
+                    <h3>Marriage Biodata</h3>
+                    <p>सुंदर बायोडाटा तैयार करें।</p>
+                </div>
                 <a href="marriage-biodata.html" class="btn">Tool खोलें</a>
             </div>
             <div class="card" style="border-top-color: #9b59b6;">
-                <h3>PAN Form Utility</h3>
-                <p>पैन कार्ड फॉर्म से जुड़ी सुविधाएं।</p>
+                <div>
+                    <h3>PAN Form Utility</h3>
+                    <p>पैन फॉर्म सुविधाएं।</p>
+                </div>
                 <a href="pan-form.html" class="btn">Tool खोलें</a>
             </div>
         </div>
