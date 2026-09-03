@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Khojiman.com - Free Online Tools & Utilities</title>
+    <title>Age Calculator - Khojiman.com</title>
     <style>
         * {
             box-sizing: border-box;
@@ -20,63 +20,80 @@
             background: linear-gradient(135deg, #0066cc, #004080);
             color: white;
             text-align: center;
-            padding: 40px 20px;
+            padding: 30px 20px;
         }
         header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+            font-size: 2rem;
+            margin-bottom: 5px;
         }
         header p {
-            font-size: 1.1rem;
+            font-size: 1rem;
             opacity: 0.9;
         }
         .container {
-            max-width: 1200px;
-            margin: 30px auto;
-            padding: 0 20px;
+            max-width: 600px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
-        .category-title {
-            font-size: 1.5rem;
-            margin: 30px 0 15px 0;
-            padding-bottom: 5px;
-            border-bottom: 2px solid #0066cc;
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
             color: #0066cc;
         }
-        .tools-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-        .card {
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            border-top: 4px solid #0066cc;
-            transition: transform 0.2s;
-        }
-        .card:hover {
-            transform: translateY(-5px);
-        }
-        .card h3 {
-            font-size: 1.2rem;
-            margin-bottom: 10px;
-            color: #222;
-        }
-        .card p {
-            font-size: 0.9rem;
-            color: #666;
-            margin-bottom: 15px;
+        input[type="date"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
         }
         .btn {
-            display: inline-block;
+            display: block;
+            width: 100%;
             background-color: #28a745;
             color: white;
-            padding: 8px 15px;
+            padding: 12px;
+            border: none;
             border-radius: 4px;
-            text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 1rem;
             font-weight: bold;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #218838;
+        }
+        .result {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #e8f4fd;
+            border-left: 5px solid #0066cc;
+            border-radius: 4px;
+            display: none;
+        }
+        .result h3 {
+            color: #004080;
+            margin-bottom: 10px;
+        }
+        .result p {
+            font-size: 1.1rem;
+            color: #333;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #0066cc;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-link:hover {
+            text-decoration: underline;
         }
         footer {
             text-align: center;
@@ -91,90 +108,62 @@
 <body>
 
     <header>
-        <h1>🚀 Khojiman.com</h1>
-        <p>100% Free, Secure & No Login Required. All tools run directly in your browser!</p>
+        <h1>📅 Age Calculator</h1>
+        <p>सटीक उम्र, महीने और दिन कैलकुलेट करें</p>
     </header>
 
     <div class="container">
-        <!-- PDF Tools -->
-        <h2 class="category-title">📄 PDF Tools (पीडीएफ टूल्स)</h2>
-        <div class="tools-grid">
-            <div class="card" style="border-top-color: #0066cc;">
-                <h3>JPG to PDF</h3>
-                <p>फोटो को तुरंत पीडीएफ में बदलें।</p>
-                <a href="image-to-pdf.html" class="btn">Tool खोलें</a>
-            </div>
-            <div class="card" style="border-top-color: #0066cc;">
-                <h3>Invoice / Bill PDF</h3>
-                <p>कस्टमर के लिए फ़ास्ट बिल बनाएं।</p>
-                <a href="invoice maker.html" class="btn">Tool खोलें</a>
-            </div>
+        <div class="form-group">
+            <label for="dob">अपनी जन्मतिथि चुनें (Date of Birth):</label>
+            <input type="date" id="dob">
+        </div>
+        <button class="btn" onclick="calculateAge()">आयु कैलकुलेट करें</button>
+
+        <div class="result" id="resultBox">
+            <h3>परिणाम (Result):</h3>
+            <p id="ageResult"></p>
         </div>
 
-        <!-- Photo & Design Tools -->
-        <h2 class="category-title">🖼️ Photo & Design Tools (फोटो टूल्स)</h2>
-        <div class="tools-grid">
-            <div class="card" style="border-top-color: #e67e22;">
-                <h3>Passport Photo Maker</h3>
-                <p>पासपोर्ट साइज फोटो तुरंत बनाएं।</p>
-                <a href="passport-photo.html" class="btn">Tool खोलें</a>
-            </div>
-            <div class="card" style="border-top-color: #e67e22;">
-                <h3>Photo Compressor</h3>
-                <p>फोटो का साइज (KB/MB) कम करें।</p>
-                <a href="photo-compressor.html" class="btn">Tool खोलें</a>
-            </div>
-            <div class="card" style="border-top-color: #e67e22;">
-                <h3>Poster Maker</h3>
-                <p>आकर्षक पोस्टर और डिज़ाइन बनाएं।</p>
-                <a href="poster-maker.html" class="btn">Tool खोलें</a>
-            </div>
-            <div class="card" style="border-top-color: #e67e22;">
-                <h3>ID Card & Mask Maker</h3>
-                <p>आईडी कार्ड और मास्क डिजाइन करें।</p>
-                <a href="id-card-maker.html" class="btn">Tool खोलें</a>
-            </div>
-        </div>
-
-        <!-- Calculators & Finance Tools -->
-        <h2 class="category-title">🧮 Calculators & Finance (कैलकुलेटर टूल्स)</h2>
-        <div class="tools-grid">
-            <div class="card" style="border-top-color: #28a745;">
-                <h3>EMI Calculator</h3>
-                <p>लोन की मंथली ईएमआई कैलकुलेट करें।</p>
-                <a href="emi-calculator.html" class="btn">Tool खोलें</a>
-            </div>
-            <div class="card" style="border-top-color: #28a745;">
-                <h3>CGPA Calculator</h3>
-                <p>CGPA को आसानी से परसेंटेज में बदलें।</p>
-                <a href="cgpa-calculator.html" class="btn">Tool खोलें</a>
-            </div>
-            <div class="card" style="border-top-color: #28a745;">
-                <h3>Delivery Challan</h3>
-                <p>डिलीवरी चालान पर्ची तुरंत तैयार करें।</p>
-                <a href="delivery-challan.html" class="btn">Tool खोलें</a>
-            </div>
-        </div>
-
-        <!-- Other Utilities -->
-        <h2 class="category-title">📝 Other Utilities (अन्य उपयोगी टूल्स)</h2>
-        <div class="tools-grid">
-            <div class="card" style="border-top-color: #9b59b6;">
-                <h3>Marriage Biodata</h3>
-                <p>विवाह के लिए सुंदर बायोडाटा बनाएं।</p>
-                <a href="marriage-biodata.html" class="btn">Tool खोलें</a>
-            </div>
-            <div class="card" style="border-top-color: #9b59b6;">
-                <h3>PAN Form Utility</h3>
-                <p>पैन कार्ड फॉर्म से जुड़ी सुविधाएं।</p>
-                <a href="pan-form.html" class="btn">Tool खोलें</a>
-            </div>
-        </div>
+        <a href="index.html" class="back-link">&larr; होम पेज पर वापस जाएं</a>
     </div>
 
     <footer>
         <p>&copy; 2026 Khojiman.com. All Rights Reserved.</p>
     </footer>
+
+    <script>
+        function calculateAge() {
+            const dobInput = document.getElementById('dob').value;
+            if (!dobInput) {
+                alert('कृपया पहले अपनी जन्मतिथि चुनें!');
+                return;
+            }
+
+            const dob = new Date(dobInput);
+            const today = new Date();
+
+            let years = today.getFullYear() - dob.getFullYear();
+            let months = today.getMonth() - dob.getMonth();
+            let days = today.getDate() - dob.getDate();
+
+            if (days < 0) {
+                months--;
+                const prevMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+                days += prevMonth.getDate();
+            }
+
+            if (months < 0) {
+                years--;
+                months += 12;
+            }
+
+            const resultBox = document.getElementById('resultBox');
+            const ageResult = document.getElementById('ageResult');
+
+            resultBox.style.display = 'block';
+            ageResult.innerHTML = `आपकी उम्र <strong>${years} वर्ष</strong>, <strong>${months} महीने</strong> और <strong>${days} दिन</strong> है।`;
+        }
+    </script>
 
 </body>
 </html>
