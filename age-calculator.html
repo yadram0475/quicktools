@@ -3,60 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Age Calculator - QuickTools</title>
+    <title>Age Calculator - Khojiman.com</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; }
-        header { background-color: #007bff; color: white; padding: 15px; text-align: center; }
-        .container { max-width: 400px; margin: 50px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; }
-        input[type="date"] { width: 100%; padding: 10px; margin: 15px 0; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; box-sizing: border-box; }
-        button { background-color: #28a745; color: white; border: none; padding: 12px 20px; border-radius: 5px; font-size: 16px; cursor: pointer; width: 100%; }
-        button:hover { background-color: #218838; }
-        .result { margin-top: 20px; font-size: 18px; font-weight: bold; color: #333; display: none; background: #e9ecef; padding: 15px; border-radius: 5px; }
-        .back-link { display: block; margin-top: 20px; color: #007bff; text-decoration: none; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background-color: #f4f6f9;
+            color: #333;
+            line-height: 1.6;
+        }
+        header {
+            background: linear-gradient(135deg, #0066cc, #004080);
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+        }
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+        header p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #0066cc;
+        }
+        input[type="date"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            background-color: #28a745;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #218838;
+        }
+        .result {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #e8f4fd;
+            border-left: 5px solid #0066cc;
+            border-radius: 4px;
+            display: none;
+        }
+        .result h3 {
+            color: #004080;
+            margin-bottom: 10px;
+        }
+        .result p {
+            font-size: 1.1rem;
+            color: #333;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #0066cc;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #222;
+            color: white;
+            margin-top: 50px;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
 
     <header>
-        <h2>QuickTools.in</h2>
+        <h1>📅 Age Calculator</h1>
+        <p>सटीक उम्र, महीने और दिन कैलकुलेट करें</p>
     </header>
 
     <div class="container">
-        <h3>Age Calculator 📊</h3>
-        <p>अपनी जन्मतिथि (DOB) चुनें:</p>
-        
-        <input type="date" id="dobInput">
-        <button onclick="calculateAge()">उम्र निकालें</button>
+        <div class="form-group">
+            <label for="dob">अपनी जन्मतिथि चुनें (Date of Birth):</label>
+            <input type="date" id="dob">
+        </div>
+        <button class="btn" onclick="calculateAge()">आयु कैलकुलेट करें</button>
 
         <div class="result" id="resultBox">
-            आपकी उम्र:<br>
-            <span id="ageText" style="color: #d9534f; font-size: 22px;"></span>
+            <h3>परिणाम (Result):</h3>
+            <p id="ageResult"></p>
         </div>
 
-        <a href="#" class="back-link">← वापस होमपेज पर जाएं</a>
+        <a href="index.html" class="back-link">&larr; होम पेज पर वापस जाएं</a>
     </div>
+
+    <footer>
+        <p>&copy; 2026 Khojiman.com. All Rights Reserved.</p>
+    </footer>
 
     <script>
         function calculateAge() {
-            let dobValue = document.getElementById("dobInput").value;
-            
-            if (!dobValue) {
-                alert("कृपया अपनी जन्मतिथि (Date of Birth) चुनें!");
+            const dobInput = document.getElementById('dob').value;
+            if (!dobInput) {
+                alert('कृपया पहले अपनी जन्मतिथि चुनें!');
                 return;
             }
 
-            let dob = new Date(dobValue);
-            let today = new Date();
+            const dob = new Date(dobInput);
+            const today = new Date();
 
             let years = today.getFullYear() - dob.getFullYear();
             let months = today.getMonth() - dob.getMonth();
             let days = today.getDate() - dob.getDate();
 
-            // महीने और दिन को एडजस्ट करना (अगर आज का दिन या महीना जन्मतिथि से पीछे है)
             if (days < 0) {
                 months--;
-                // पिछले महीने के दिनों की संख्या निकालें
-                let prevMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+                const prevMonth = new Date(today.getFullYear(), today.getMonth(), 0);
                 days += prevMonth.getDate();
             }
 
@@ -65,11 +157,11 @@
                 months += 12;
             }
 
-            let resultText = years + " साल, " + months + " महीने, और " + days + " दिन";
-            
-            // रिजल्ट दिखाना
-            document.getElementById("ageText").innerText = resultText;
-            document.getElementById("resultBox").style.display = "block";
+            const resultBox = document.getElementById('resultBox');
+            const ageResult = document.getElementById('ageResult');
+
+            resultBox.style.display = 'block';
+            ageResult.innerHTML = `आपकी उम्र <strong>${years} वर्ष</strong>, <strong>${months} महीने</strong> और <strong>${days} दिन</strong> है।`;
         }
     </script>
 
