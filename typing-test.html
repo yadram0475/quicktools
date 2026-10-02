@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Speed Test - Khojiman.com</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background-color: #f4f6f9;
+            color: #333;
+            line-height: 1.6;
+        }
+        header {
+            background: linear-gradient(135deg, #0066cc, #004080);
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+        }
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+        header p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        .container {
+            max-width: 700px;
+            margin: 30px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+        .stat-box span {
+            color: #0066cc;
+        }
+        .sample-text {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            color: #444;
+            line-height: 1.8;
+            user-select: none;
+        }
+        textarea {
+            width: 100%;
+            height: 120px;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            resize: none;
+            margin-bottom: 15px;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #0066cc;
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            background-color: #28a745;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+        }
+        .btn:hover {
+            background-color: #218838;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #0066cc;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #222;
+            color: white;
+            margin-top: 50px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>⌨️ Typing Speed Test</h1>
+        <p>अपनी टाइपिंग स्पीड (WPM) और एक्यूरेसी जांचें</p>
+    </header>
+
+    <div class="container">
+        <div class="stats">
+            <div class="stat-box">समय: <span id="timer">60</span>s</div>
+            <div class="stat-box">स्पीड: <span id="wpm">0</span> WPM</div>
+            <div class="stat-box">एक्यूरेसी: <span id="accuracy">100</span>%</div>
+        </div>
+
+        <div class="sample-text" id="sampleText">
+            Practice typing daily to increase your speed and accuracy. Consistent effort leads to great improvement in your typing skills and helps you work faster online.
+        </div>
+
+        <textarea id="userInput" placeholder="यहाँ टाइप करना शुरू करें... (टाइप करते ही टाइमर शुरू हो जाएगा)" disabled></textarea>
+        
+        <button class="btn" id="startBtn" onclick="startTest()">टेस्ट शुरू करें</button>
+
+        <br>
+        <a href="index.html" class="back-link">&larr; होम पेज पर वापस जाएं</a>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Khojiman.com. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        const sampleTextEl = document.getElementById("sampleText");
+        const userInputEl = document.getElementById("userInput");
+        const timerEl = document.getElementById("timer");
+        const wpmEl = document.getElementById("wpm");
+        const accuracyEl = document.getElementById("accuracy");
+        const startBtn = document.getElementById("startBtn");
+
+        let timeLeft = 60;
+        let timer = null;
+        let isPlaying = false;
+
+        const textToType = sampleTextEl.innerText.trim();
+
+        function startTest() {
+            userInputEl.value = "";
+            userInputEl.disabled = false;
+            userInputEl.focus();
+            timeLeft = 60;
+            isPlaying = true;
+            startBtn.innerText = "रीसेट करें / फिर से शुरू करें";
+            
+            clearInterval(timer);
+            timer = setInterval(() => {
+                if (timeLeft > 0) {
+                    timeLeft--;
+                    timerEl.innerText = timeLeft;
+                    calculateStats();
+                } else {
+                    stopTest();
+                }
+            }, 1000);
+        }
+
+        userInputEl.addEventListener("input", () => {
+            if (!isPlaying) return;
+            calculateStats();
+            if (userInputEl.value.length >= textToType.length) {
+                stopTest();
+            }
+        });
+
+        function calculateStats() {
+            const userText = userInputEl.value;
+            const wordsTyped = userText.trim().split(/\s+/).filter(w => w.length > 0).length;
+            
+            // WPM calculation (60 seconds standard)
+            const timeElapsed = 60 - timeLeft;
+            const wpm = timeElapsed > 0 ? Math.round((wordsTyped / timeElapsed) * 60) : 0;
+            wpmEl.innerText = wpm;
+
+            // Accuracy calculation
+            let correctChars = 0;
+            for (let i = 0; i < userText.length; i++) {
+                if (userText[i] === textToType[i]) {
+                    correctChars++;
+                }
+            }
+            const accuracy = userText.length > 0 ? Math.round((correctChars / userText.length) * 100) : 100;
+            accuracyEl.innerText = accuracy;
+        }
+
+        function stopTest() {
+            clearInterval(timer);
+            isPlaying = false;
+            userInputEl.disabled = true;
+            startBtn.innerText = "फिर से टेस्ट दें";
+        }
+    </script>
+
+</body>
+</html>
