@@ -1,0 +1,40 @@
+
+<!doctype html>
+<html lang="hi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Khojiman.com Login</title>
+  <style>
+    body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#eaf3ff,#eee8ff);color:#172554}
+    main{max-width:420px;margin:60px auto;padding:28px;background:white;border-radius:20px;box-shadow:0 15px 45px #263b6722}
+    h1{color:#1558bd;text-align:center}p{text-align:center;color:#64748b}
+    label{display:block;margin:16px 0;font-weight:bold}input{box-sizing:border-box;width:100%;padding:13px;margin-top:7px;border:1px solid #ccd6e8;border-radius:9px}
+    button{width:100%;padding:13px;background:#2463eb;color:white;border:0;border-radius:9px;font-weight:bold;cursor:pointer}
+    a{color:#1759c7}footer{text-align:center;margin-top:20px;font-size:13px}
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Khojiman.com</h1>
+    <p>आपका डिजिटल डैशबोर्ड</p>
+    <form id="login">
+      <label>ईमेल
+        <input type="email" required placeholder="अपना ईमेल लिखें">
+      </label>
+      <label>पासवर्ड
+        <input type="password" required minlength="6" placeholder="पासवर्ड">
+      </label>
+      <button type="submit">Login करें</button>
+    </form>
+    <p id="message">Firebase सेटअप के बाद सुरक्षित Login चालू होगा।</p>
+    <footer><a href="../index.html">मुख्य वेबसाइट पर वापस जाएँ</a></footer>
+  </main>
+  <script>
+    document.getElementById('login').addEventListener('submit',function(e){
+      e.preventDefault();
+      document.getElementById('message').textContent='Login अभी सक्रिय नहीं है। Firebase Authentication सेटअप करना बाकी है।';
+    });
+  </script>
+</body>
+</html>
