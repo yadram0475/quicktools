@@ -1,10 +1,10 @@
-// Firebase Console > Project settings > Your apps > Config से वास्तविक मान भरें।
-// यह WEB config है; Service Account JSON / private key कभी यहाँ न डालें।
+
 export const firebaseConfig = {
-  apiKey: "PASTE_API_KEY",
+  apiKey: "AIzaSyApCquk-kJlTp0KYW2hQ2Zz1hAVi69LkWM",
   authDomain: "khojiman-a1d85.firebaseapp.com",
   projectId: "khojiman-a1d85",
   storageBucket: "khojiman-a1d85.firebasestorage.app",
-  messagingSenderId: "PASTE_MESSAGING_SENDER_ID",
-  appId: "PASTE_APP_ID"
+  messagingSenderId: "522761922564",
+  appId: "1:522761922564:web:2f9195c0b258d1ca796d51",
+  measurementId: "G-HH2GF8MBQ9"
 };
