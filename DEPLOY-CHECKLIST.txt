@@ -1,0 +1,11 @@
+[ ] Existing GitHub repo ka backup/branch banaya
+[ ] Purani index.html aur tool files delete/overwrite nahi ki
+[ ] account/ files repository mein add ki
+[ ] Firebase project + Email/Password Authentication enable ki
+[ ] Firebase web config account/firebase-config.js mein bhara
+[ ] khojiman.com aur www.khojiman.com authorized domains mein add kiye
+[ ] Firestore database aur reviewed security rules deploy ki
+[ ] Test signup, email verification, login, password reset kiye
+[ ] Recharge ko abhi request-only samjha; real payment enable nahi
+[ ] Admin claim trusted Admin SDK se set kiya
+[ ] Payment gateway sandbox, verified webhook, idempotency aur security review complete ki
